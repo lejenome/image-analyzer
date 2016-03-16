@@ -1,48 +1,38 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-
-# class AppWindow(Gtk.Window):
-#    def __init__(self):
-#        Gtk.Window.__init__(self, title="Picture Analyzer")
-#
-#        self.root = Gtk.Box(spacing=6)
-#        self.add(self.root)
-#
-#        self.lbl1 = Gtk.Label(label="lbl1", angle=25, halign=Gtk.Align.END)
-#        self.root.pack_start(self.lbl1, True, True, 0)
-#        self.btn1 = Gtk.Button(label="Btn1")
-#        self.btn1.connect('clicked', self.on_btn1_clicked)
-#        self.root.pack_end(self.btn1, True, True, 0)
-#
-#    def on_btn1_clicked(self, widget):
-#        print('hi')
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 builder = Gtk.Builder()
 builder.add_from_file("app.glade")
 
 image_filter = builder.get_object('filefilter1')
 image_filter.set_name("Image files")
-image_filter.add_mime_type("image/*")
+image_filter.add_pixbuf_formats()
 any_filter = builder.get_object('filefilter2')
 any_filter.set_name("Any files")
 any_filter.add_mime_type("*")
 
 win = builder.get_object('window1')
-about = builder.get_object('aboutdialog1')
+win.about = builder.get_object('aboutdialog1')
 
 imageList = builder.get_object("listbox1")
 imageView = builder.get_object('image1')
 
+# ajouter image dans View
+def showImage(name):
+    size = imageView.get_allocation()
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(name, size.width, size.height)
+    imageView.set_from_pixbuf(pixbuf)
+# ajouter image dans la liste
 def addImage(name):
     it = Gtk.ListBoxRow()
     it.data = name
     it.add(Gtk.Label(name.split('/')[-1]))
     imageList.add(it)
     imageList.show_all()
-    imageView.set_from_file(name)
+    showImage(name)
 
-imageList.connect('row-activated', lambda w, row: imageView.set_from_file(row.data))
+imageList.connect('row-activated', lambda w, row: showImage(row.data))
 
 class EventHandler():
 
@@ -65,10 +55,7 @@ class EventHandler():
         chooser.destroy()
 
     def on_about_clicked(self, *args):
-        about.show_all()
-
-# win = AppWindow()
-# win.connect('delete-event', Gtk.main_quit)
+        win.about.show_all()
 
 builder.connect_signals(EventHandler())
 win.show_all()
