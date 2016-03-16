@@ -22,8 +22,11 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
 <interface>
   <requires lib="gtk+" version="3.10"/>
   <!-- interface-license-type gplv3 -->
-  <object class="GtkFileFilter" id="filefilter1"/>
-  <object class="GtkFileFilter" id="filefilter2"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">0.5</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -297,6 +300,10 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkSpinButton" id="spinbutton6">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="adjustment">adjustment1</property>
+                <property name="digits">2</property>
+                <property name="numeric">True</property>
+                <property name="update_policy">if-valid</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -556,7 +563,8 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
   </object>
   <object class="GtkAboutDialog" id="aboutdialog1">
     <property name="can_focus">False</property>
-    <property name="type_hint">menu</property>
+    <property name="window_position">center</property>
+    <property name="type_hint">normal</property>
     <property name="transient_for">window1</property>
     <property name="program_name">Image Analyzer</property>
     <property name="version">0.1</property>
@@ -570,6 +578,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="aboutdialog-action_area1">
             <property name="can_focus">False</property>
+            <property name="opacity">0</property>
             <property name="layout_style">end</property>
           </object>
           <packing>
