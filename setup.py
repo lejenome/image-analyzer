@@ -22,6 +22,7 @@ setup(
     tests_require=[
     ],
     scripts=[
+        'bin/image-analyzer',
     ],
     # platforms=["any"],
     platforms=["linux"],
