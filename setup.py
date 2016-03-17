@@ -2,8 +2,11 @@
 import os
 from setuptools import setup
 
+def fopen(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname))
+
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return fopen(fname).read()
 
 setup(
     name='image-analyzer',
@@ -16,6 +19,7 @@ setup(
     # url='',
     include_package_data=True,
     install_requires=[
+        line.strip() for line in fopen("requirements.txt")
     ],
     setup_requires=[
     ],

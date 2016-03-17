@@ -1,0 +1,9 @@
+tifffile
+numpy
+sympy
+pillow
+matplotlib
+scipy
+nipy
+nibabel
+pyhrf

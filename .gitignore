@@ -3,6 +3,7 @@ env/
 \#*\#
 __pycache__/
 build/
+dist/
 .*.swp
 *.py[cod]
 *.pot
@@ -12,3 +13,4 @@ pip-delete-this-directory.txt
 
 *.log
 *.egg-info/
+.eggs/
