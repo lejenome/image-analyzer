@@ -63,7 +63,10 @@ class EventHandler():
 class App:
     """main logic for the graphical interface
 
-    inital and load GtkBuilder
+    Usage::
+
+        app = App()
+        app.run()
     """
 
     def __init__(self):
