@@ -24,6 +24,7 @@ setup(
     scripts=[
         'bin/image-analyzer',
     ],
+    package_dir={'': 'src'},
     # platforms=["any"],
     platforms=["linux"],
     classifiers=[

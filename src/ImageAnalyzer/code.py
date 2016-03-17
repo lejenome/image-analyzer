@@ -1,34 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-# import Utils
-import time
-import random
-import csv
-# import cv2
 
-import cProfile
-import cPickle
+# import Utils
+# import time
+# import random
+# import csv
+# import cv2
+# import sys
+# if sys.version_info[0] == 2:
+#    import cProfile
+#    import cPickle
+# else:
+#    import profile
+#    import pickle
+
 
 import pylab
 from pylab import *
 
 # import Image #Python Imaging Library (PIL)
 from PIL import Image
-
-# from pyhrf.boldsynth.boldsynthold import *
-# from pyhrf.vbjde.Utils import *
-from pyhrf.vbjde.Utils import *
-from pyhrf.paradigm import restarize_events
-from pyhrf.boldsynth.hrf import genBezierHRF, genGaussianSmoothHRF
-from pyhrf.boldsynth.boldsynth.scenarios import *
-from pyhrf.boldsynth.scenarios import *
-from pyhrf.boldsynth.boldsynth.boldmodel import *
-from pyhrf.graph import *
-from pyhrf.boldsynth.field import genPotts, count_homo_cliques
-from pyhrf.graph import graph_from_lattice, kerMask2D_4n, kerMask2D_8n
-from pyhrf.vbjde.Utils import roc_curve
-from pyhrf.boldsynth.hrf import getCanoHRF
 
 import numpy as np
 from numpy.random.mtrand import dirichlet
@@ -43,15 +35,28 @@ import scipy.io as spio
 from scipy import linalg
 from scipy import stats
 
-from tifffile import imread
+# from tifffile import imread
 
 from matplotlib import *
 import matplotlib.pyplot as plt
 from matplotlib import pylab as pl
 import matplotlib.font_manager as fm
 
+# from pyhrf.boldsynth.boldsynthold import *
+# from pyhrf.vbjde.Utils import *
+# from pyhrf.vbjde.Utils import *
+from pyhrf.paradigm import restarize_events
+from pyhrf.boldsynth.hrf import genBezierHRF, genGaussianSmoothHRF
+from pyhrf.boldsynth.scenarios import *
+# from pyhrf.boldsynth.boldsynth.boldmodel import *
+from pyhrf.graph import *
+from pyhrf.boldsynth.field import genPotts, count_homo_cliques
+from pyhrf.graph import graph_from_lattice, kerMask2D_4n, kerMask2D_8n
+# from pyhrf.vbjde.Utils import roc_curve
+from pyhrf.boldsynth.hrf import getCanoHRF
+
 # repartoire des données ######
-dataDir = os.getenv('HOME') + '/Paraguay'
+dataDir = os.getenv('HOME') + 'git/py-gtk3/Paraguay'
 #########################
 # repertoir des outputs #####
 outDir = os.getenv('HOME') + '/ParaguayOut'
