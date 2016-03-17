@@ -1,7 +1,14 @@
 env/
 *~
 \#*\#
-*.pyc
 __pycache__/
 build/
 .*.swp
+*.py[cod]
+*.pot
+
+pip-log.txt
+pip-delete-this-directory.txt
+
+*.log
+*.egg-info/
