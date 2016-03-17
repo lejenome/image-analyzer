@@ -12,7 +12,6 @@ import cPickle
 
 import pylab
 from pylab import *
-import pylab as P
 
 # import Image #Python Imaging Library (PIL)
 from PIL import Image
@@ -44,13 +43,21 @@ import scipy.io as spio
 from scipy import linalg
 from scipy import stats
 
-import tifffile
 from tifffile import imread
 
 from matplotlib import *
 import matplotlib.pyplot as plt
 from matplotlib import pylab as pl
 import matplotlib.font_manager as fm
+
+# repartoire des données ######
+dataDir = os.getenv('HOME') + '/Paraguay'
+#########################
+# repertoir des outputs #####
+outDir = os.getenv('HOME') + '/ParaguayOut'
+if not os.path.isdir(outDir):
+    print('creating output directory...')
+    os.mkdir(outDir)
 
 def seuillage(image, seuil):
     for i in range(0, image.shape[0]):
@@ -77,18 +84,17 @@ def ConditionalNRLHist(nrls, labels, M, height, width):
         m, s = stats.norm.fit(r)
         pdf_g2 = stats.norm.pdf(lnspc2, m, s)
 
-        P.figure()
-        P.plot(lnspc, pdf_g / len(pdf_g), label="Norm")
-        P.hold(True)
-        P.plot(lnspc2, pdf_g2 / len(pdf_g2), 'k', label="Norm")
-        P.legend(['Posterior: Activated', 'Posterior: Non Activated'])
+        pylab.figure()
+        pylab.plot(lnspc, pdf_g / len(pdf_g), label="Norm")
+        pylab.hold(True)
+        pylab.plot(lnspc2, pdf_g2 / len(pdf_g2), 'k', label="Norm")
+        pylab.legend(['Posterior: Activated', 'Posterior: Non Activated'])
         # xmin, xmax = min(xt), max(xt)
         # ind2 = find(q <= 0.5)
-    P.show()
+    pylab.show()
 
 
 def lecture_data(dataDir, xmin, xmax, ymin, ymax, bande, start, facteur, end):
-    images = []
     images = os.listdir(dataDir)
     images = sorted(images)
     images = images[start:end]
@@ -100,7 +106,7 @@ def lecture_data(dataDir, xmin, xmax, ymin, ymax, bande, start, facteur, end):
         labels = labels[xmin:xmax, ymin:ymax, bande].astype(float)
         if (facteur > 1):
             labels = labels / facteur
-    signal.append(labels.flatten())
+        signal.append(labels.flatten())
     Y = np.asarray(signal)
     width = ymax - ymin
     height = xmax - xmin
@@ -109,16 +115,9 @@ def lecture_data(dataDir, xmin, xmax, ymin, ymax, bande, start, facteur, end):
 def gaussian(x, mu, sig):
     return 1. / (sqrt(2. * pi) * sig) * np.exp(-np.power((x - mu) / sig, 2.) / 2)
 zones = []
-# repartoire des données ######
-dataDir = '/home/imen/Bureau/Application/Paraguay'
-#########################
-# repertoir des outputs #####
-outDir = '/home/imen/Bureau/'
-if not os.path.isdir(outDir):
-    print('creating output directory...')
-    os.mkdir(outDir)
 ######################
-# lecture des données ##################
+# lecture des données
+######################
 facteur = 1000.0
 Centred = 0
 start = 2  # 2
@@ -167,8 +166,8 @@ scale = 1
 
 M = 1
 #####################
-
-# flags ###########################
+# flags
+#####################
 
 # pl =0 sans PL ,pl =1 avec PL
 pl = 1
