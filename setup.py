@@ -21,9 +21,20 @@ setup(
     ],
     tests_require=[
     ],
-    platforms=["any"],
+    scripts=[
+    ],
+    # platforms=["any"],
+    platforms=["linux"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Operating System :: OS Independent',
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: Python :: 2",
+        # "Programming Language :: Python :: 2 :: Only",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Mathematics",
+        "Topic :: Scientific/Engineering :: Medical Science Apps.",
     ],
 )
