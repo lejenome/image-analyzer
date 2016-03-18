@@ -11,6 +11,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf
 # imageList.set_sort_func(lambda r1, r2, data, notify_destroy: return -1, None, False)
 # imageList.set_filter_func(lambda r, r2, data, notify_destroy: return True, None, False)
 
+
 class EventHandler():
     """Signal Event handlers definition"""
 
@@ -59,6 +60,7 @@ class EventHandler():
     def on_about_closed(self, *args):
         print("on_about_closed")
         app.win.about.hide()
+
 
 class App:
     """main logic for the graphical interface

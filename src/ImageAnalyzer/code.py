@@ -64,6 +64,7 @@ if not os.path.isdir(outDir):
     print('creating output directory...')
     os.mkdir(outDir)
 
+
 def seuillage(image, seuil):
     for i in range(0, image.shape[0]):
         for j in range(0, image.shape[1]):
@@ -72,6 +73,7 @@ def seuillage(image, seuil):
             else:
                 image[i, j] = 0
     return image
+
 
 def ConditionalNRLHist(nrls, labels, M, height, width):
     for m in range(0, M):
@@ -116,6 +118,7 @@ def lecture_data(dataDir, xmin, xmax, ymin, ymax, bande, start, facteur, end):
     width = ymax - ymin
     height = xmax - xmin
     return Y, height, width, bande
+
 
 def gaussian(x, mu, sig):
     return 1. / (sqrt(2. * pi) * sig) * np.exp(-np.power((x - mu) / sig, 2.) / 2)
