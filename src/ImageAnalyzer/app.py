@@ -15,8 +15,6 @@ from gi.repository import Gtk, Gdk, GdkPixbuf
 class EventHandler():
     """Signal Event handlers definition"""
 
-    app = None
-
     def __init__(self, app):
         self.app = app
 
@@ -26,12 +24,12 @@ class EventHandler():
 
     def on_clear_clicked(self, *args):
         """clear images list and image view"""
-        app.imageView.clear()
+        self.app.imageView.clear()
 
     def on_add_clicked(self, *args):
         """Launch multi-select image file chooser dialog and append new files
         to the image list and show last selected file"""
-        chooser = Gtk.FileChooserDialog("Choose an image", app.win,
+        chooser = Gtk.FileChooserDialog("Choose an image", self.app.win,
                                         Gtk.FileChooserAction.OPEN,
                                         (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                                          Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
@@ -40,26 +38,26 @@ class EventHandler():
         image_filter = Gtk.FileFilter()
         image_filter.set_name("Image files")
         image_filter.add_pixbuf_formats()
-        any_filter = Gtk.FileFilter()
-        any_filter.set_name("Any files")
-        any_filter.add_pattern("*")
+        # any_filter = Gtk.FileFilter()
+        # any_filter.set_name("Any files")
+        # any_filter.add_pattern("*")
 
         chooser.add_filter(image_filter)
-        chooser.add_filter(any_filter)
+        # chooser.add_filter(any_filter)
         response = chooser.run()
         if response == Gtk.ResponseType.OK:
-            app.add_images(chooser.get_filenames())
+            self.app.add_images(chooser.get_filenames())
         chooser.destroy()
 
     def on_about_clicked(self, *args):
         """show about dialog"""
-        app.win.about.show_all()
+        self.app.win.about.show_all()
         # .run
         # .destroy
 
     def on_about_closed(self, *args):
         print("on_about_closed")
-        app.win.about.hide()
+        self.app.win.about.hide()
 
 
 class App:
