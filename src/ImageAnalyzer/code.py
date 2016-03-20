@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
 
 # import Utils
 # import time
@@ -16,49 +15,59 @@ import os
 #    import pickle
 
 
-import pylab
+import os
+
+from numpy import (
+    arange, array, power, exp, asarray, float64, zeros, ones, linspace
+)
+from pylab import (
+    show, legend, hold, matshow, colorbar, reshape, savefig, std, mean, title,
+    plot, figure
+)
+from scipy import stats
+from matplotlib.pyplot import get_cmap, cm
+from pyhrf.graph import graph_from_lattice  # , kerMask2D_4n, kerMask2D_8n
+from pyhrf.boldsynth.hrf import getCanoHRF
+from pyhrf.verbose import set_verbosity
+
+
 from pylab import *
 
 # import Image #Python Imaging Library (PIL)
-from PIL import Image
+# from PIL import Image
 
-import numpy as np
-from numpy.random.mtrand import dirichlet
+# import numpy as np
+# from numpy.random.mtrand import dirichlet
 
-from scipy.misc import fromimage
-from scipy.linalg import toeplitz
-import scipy.io
-from scipy.misc import toimage
-import scipy as sp
-import scipy.sparse
-import scipy.io as spio
-from scipy import linalg
-from scipy import stats
+# from scipy.misc import fromimage
+# from scipy.linalg import toeplitz
+# import scipy.io
+# from scipy.misc import toimage
+# import scipy as sp
+# import scipy.sparse
+# import scipy.io as spio
+# from scipy import linalg
 
 # from tifffile import imread
 
 from matplotlib import *
-import matplotlib.pyplot as plt
-from matplotlib import pylab as pl
-import matplotlib.font_manager as fm
+# from matplotlib import pylab as pl
+# import matplotlib.font_manager as fm
 
 # from pyhrf.boldsynth.boldsynthold import *
 # from pyhrf.vbjde.Utils import *
 # from pyhrf.vbjde.Utils import *
-from pyhrf.paradigm import restarize_events
-from pyhrf.boldsynth.hrf import genBezierHRF, genGaussianSmoothHRF
+# from pyhrf.paradigm import restarize_events
+# from pyhrf.boldsynth.hrf import genBezierHRF, genGaussianSmoothHRF
 from pyhrf.boldsynth.scenarios import *
 # from pyhrf.boldsynth.boldsynth.boldmodel import *
 from pyhrf.graph import *
-from pyhrf.boldsynth.field import genPotts, count_homo_cliques
-from pyhrf.graph import graph_from_lattice, kerMask2D_4n, kerMask2D_8n
+# from pyhrf.boldsynth.field import genPotts, count_homo_cliques
 # from pyhrf.vbjde.Utils import roc_curve
-from pyhrf.boldsynth.hrf import getCanoHRF
 
 # repartoire des données ######
 dataDir = os.getenv('HOME') + 'git/py-gtk3/Paraguay'
-#########################
-# repertoir des outputs #####
+# repertoir des outputs
 outDir = os.getenv('HOME') + '/ParaguayOut'
 if not os.path.isdir(outDir):
     print('creating output directory...')
@@ -82,23 +91,23 @@ def ConditionalNRLHist(nrls, labels, M, height, width):
         ind2 = find(q < 0.5)
         r = nrls[ind]
         xmin, xmax = min(nrls), max(nrls)
-        lnspc = np.linspace(xmin, xmax, 100)
+        lnspc = linspace(xmin, xmax, 100)
         m, s = stats.norm.fit(r)
         pdf_g = stats.norm.pdf(lnspc, m, s)
         r = nrls[ind2]
         # xmin, xmax = min(r), max(r)
-        lnspc2 = np.linspace(xmin, xmax, 100)  # len(r)
+        lnspc2 = linspace(xmin, xmax, 100)  # len(r)
         m, s = stats.norm.fit(r)
         pdf_g2 = stats.norm.pdf(lnspc2, m, s)
 
-        pylab.figure()
-        pylab.plot(lnspc, pdf_g / len(pdf_g), label="Norm")
-        pylab.hold(True)
-        pylab.plot(lnspc2, pdf_g2 / len(pdf_g2), 'k', label="Norm")
-        pylab.legend(['Posterior: Activated', 'Posterior: Non Activated'])
+        figure()
+        plot(lnspc, pdf_g / len(pdf_g), label="Norm")
+        hold(True)
+        plot(lnspc2, pdf_g2 / len(pdf_g2), 'k', label="Norm")
+        legend(['Posterior: Activated', 'Posterior: Non Activated'])
         # xmin, xmax = min(xt), max(xt)
         # ind2 = find(q <= 0.5)
-    pylab.show()
+    show()
 
 
 def lecture_data(dataDir, xmin, xmax, ymin, ymax, bande, start, facteur, end):
@@ -114,14 +123,15 @@ def lecture_data(dataDir, xmin, xmax, ymin, ymax, bande, start, facteur, end):
         if (facteur > 1):
             labels = labels / facteur
         signal.append(labels.flatten())
-    Y = np.asarray(signal)
+    Y = asarray(signal)
     width = ymax - ymin
     height = xmax - xmin
     return Y, height, width, bande
 
 
 def gaussian(x, mu, sig):
-    return 1. / (sqrt(2. * pi) * sig) * np.exp(-np.power((x - mu) / sig, 2.) / 2)
+    return 1. / (sqrt(2. * pi) * sig) * exp(-power((x - mu) / sig, 2.) / 2)
+
 zones = []
 ######################
 # lecture des données
@@ -157,7 +167,7 @@ TR = 1
 # for i in range (0,Y.shape[0]) :
 #  figure(nf)
 #  PL_img =reshape(Y[i,:],(height,width))
-#  matshow(PL_img,cmap=plt.get_cmap('gray'))
+#  matshow(PL_img,cmap=get_cmap('gray'))
 #  colorbar()
 #  nf=nf+1
 #  print('save image ' + str(i))
@@ -199,8 +209,8 @@ shower = 1
 
 
 # construction Onsets #################
-# Onsets = {'nuages' : np.array([1,6,7])}
-Onsets = {'nuages': np.array([0])}
+# Onsets = {'nuages' : array([1,6,7])}
+Onsets = {'nuages': array([0])}
 ##################
 
 nf = 1
@@ -210,12 +220,12 @@ areas = ['ra']
 labelFields = {}
 cNames = ['inactiv', 'activ']
 spConf = RegularLatticeMapping((height, width, 1))
-graph = graph_from_lattice(numpy.ones((height, width, 1), dtype=int))
+graph = graph_from_lattice(ones((height, width, 1), dtype=int))
 J = Y.shape[0]
 l = int(sqrt(J))
 
 
-pyhrf.verbose.set_verbosity(2)
+set_verbosity(2)
 # NbIter, nrls_mean, hrf_mean, hrf_covar, labels_proba, noise_var, \
 # nrls_class_mean, nrls_class_var, beta, drift_coeffs, drift,CONTRAST, CONTRASTVAR, \
 # nrls_criteria, hrf_criteria,labels_criteria, nrls_hrf_criteria, compute_time,compute_time_mean, \
@@ -223,7 +233,7 @@ pyhrf.verbose.set_verbosity(2)
 # ppm_a_nrl,ppm_g_nrl, ppm_a_contrasts, ppm_g_contrasts, variation_coeff = \
 # jde_vem_bold_fast_python(pl,graph, Y, Onsets, Thrf, K,TR, beta, dt, estimateSigmaH, sigmaH,nItMax,nItMin,estimateBeta)
 # FlagZ = 1
-# q_Z = numpy.zeros((M,K,J),dtype=numpy.float64)
+# q_Z = zeros((M,K,J),dtype=float64)
 # NbIter,m_A, m_H, q_Z, sigma_epsilone, mu_k, sigma_k,Beta,L,PL,CONTRAST, CONTRASTVAR,cA,cH,cZ,cAH,cTime,cTimeMean,Sigma_A,XX = \
 # Main_vbjde_Extension_TD(height,width,q_Z,FlagZ,pl,graph,Y,Onsets,Thrf,K,TR,beta,dt,scale,estimateSigmaH,sigmaH,nItMax,nItMin,estimateBeta)
 
@@ -234,17 +244,17 @@ pyhrf.verbose.set_verbosity(2)
 # Main_vbjde_Extension_TD(height,width,q_Z,FlagZ,pl,graph,Y,Onsets,Thrf,K,TR,beta,dt,scale,estimateSigmaH,sigmaH,nItMax,nItMin,estimateBeta)
 #
 # ytild=PL
-# matshow(reshape(m_A_f[:,0],(height,width)) - reshape(m_A[:,0],(height,width)),cmap=plt.get_cmap('gray'))
+# matshow(reshape(m_A_f[:,0],(height,width)) - reshape(m_A[:,0],(height,width)),cmap=get_cmap('gray'))
 # colorbar()
 
 
 FlagZ = 1
-q_Z0 = numpy.zeros((M, K, J), dtype=numpy.float64)
+q_Z0 = zeros((M, K, J), dtype=float64)
 if not FlagZ:
     q_Z0 = q_Z
 FlagH = 1
 TT, m_h = getCanoHRF(Thrf - dt, dt)
-hrf0 = numpy.array(m_h).astype(numpy.float64)
+hrf0 = array(m_h).astype(float64)
 Sigma_H0 = eye(hrf0.shape[0])
 if not FlagH:
     hrf0 = h_H
@@ -260,7 +270,7 @@ ConditionalNRLHist(m_A, q_Z, M, height, width)
 MMin = -1.0  # Y.min()
 MMax = 1.0  # Y.max()
 pas = (MMax - MMin) / 100
-xx = np.arange(MMin, MMax, pas)
+xx = arange(MMin, MMax, pas)
 g0 = gaussian(xx, mu_k[0][0], sigma_k[0][0])
 g1 = gaussian(xx, mu_k[0][1], sigma_k[0][1])
 #
@@ -276,7 +286,7 @@ g1 = gaussian(xx, mu_k[0][1], sigma_k[0][1])
 #   for i in range (0,ytild.shape[0]) :
 #       figure(nf)
 #       PL_img =reshape(ytild[i,:],(height,width))
-#       matshow(PL_img,cmap=plt.get_cmap('gray'))
+#       matshow(PL_img,cmap=get_cmap('gray'))
 #       colorbar()
 #       nf=nf+1
 #       savefig(outDir+'PL'+str(i)+'bande=' +str(bande)+'.png')
@@ -299,8 +309,8 @@ for m in range(0, M):
     z1 = m_A[:, m]
     z2 = reshape(z1, (height, width))
     figure((nf + 1) * 110)
-    # figure Nrl ########,cmap=plt.get_cmap('gray')
-    matshow(z2, cmap=plt.get_cmap('gray'))
+    # figure Nrl ########,cmap=get_cmap('gray')
+    matshow(z2, cmap=get_cmap('gray'))
     colorbar()
     # title("Est: m = " + str(m))
     if save == 1:
@@ -308,13 +318,13 @@ for m in range(0, M):
     q = q_Z[m, 1, :]
     q2 = reshape(q, (height, width))
     # q2 = seuillage(q2,0.5)
-    matshow(q2, cmap=plt.get_cmap('gray'))
+    matshow(q2, cmap=get_cmap('gray'))
     colorbar()
 #   for k in range(0,1):
 #       q = q_Z[m,k,:]
 #       q2 = reshape(q,(height,width))
 #       figure ((nf+1) *38)
-#       matshow(q2,cmap=plt.get_cmap('gray'))
+#       matshow(q2,cmap=get_cmap('gray'))
 #       colorbar()
 #       # figure Q_sans seuil ###########
 #       if save == 1 :
