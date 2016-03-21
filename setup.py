@@ -21,7 +21,7 @@ setup(
     # url='',
     include_package_data=True,
     install_requires=[
-        line.strip() for line in fopen("requirements.txt")
+        line.strip().split('==')[0] for line in fopen("requirements.txt")
     ],
     setup_requires=[
     ],
