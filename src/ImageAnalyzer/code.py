@@ -1,69 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# import Utils
-# import time
-# import random
-# import csv
-# import cv2
-# import sys
-# if sys.version_info[0] == 2:
-#    import cProfile
-#    import cPickle
-# else:
-#    import profile
-#    import pickle
-
-
 import os
 
+from math import pi, sqrt
 from numpy import (
-    arange, array, power, exp, asarray, float64, zeros, ones, linspace
+    arange, array, power, exp, asarray, float64, zeros, ones, linspace, eye
 )
 from pylab import (
     show, legend, hold, matshow, colorbar, reshape, savefig, std, mean, title,
-    plot, figure
+    plot, figure, find
 )
+
 from scipy import stats
 from matplotlib.pyplot import get_cmap, cm
-from pyhrf.graph import graph_from_lattice  # , kerMask2D_4n, kerMask2D_8n
 from pyhrf.boldsynth.hrf import getCanoHRF
-from pyhrf.verbose import set_verbosity
-
-
-from pylab import *
-
-# import Image #Python Imaging Library (PIL)
-# from PIL import Image
-
-# import numpy as np
-# from numpy.random.mtrand import dirichlet
-
-# from scipy.misc import fromimage
-# from scipy.linalg import toeplitz
-# import scipy.io
-# from scipy.misc import toimage
-# import scipy as sp
-# import scipy.sparse
-# import scipy.io as spio
-# from scipy import linalg
-
-# from tifffile import imread
-
-from matplotlib import *
-# from matplotlib import pylab as pl
-# import matplotlib.font_manager as fm
-
-# from pyhrf.boldsynth.boldsynthold import *
-# from pyhrf.vbjde.Utils import *
-# from pyhrf.vbjde.Utils import *
-# from pyhrf.paradigm import restarize_events
-# from pyhrf.boldsynth.hrf import genBezierHRF, genGaussianSmoothHRF
-from pyhrf.boldsynth.scenarios import *
-# from pyhrf.boldsynth.boldsynth.boldmodel import *
-from pyhrf.graph import *
-# from pyhrf.boldsynth.field import genPotts, count_homo_cliques
-# from pyhrf.vbjde.Utils import roc_curve
+from pyhrf.graph import graph_from_lattice
+from pyhrf.vbjde.Utils import Main_vbjde_Extension_TD
+from pyhrf.boldsynth.boldsynth.scenarios import RegularLatticeMapping
+import pyhrf.verbose
+from tifffile import imread
 
 # repartoire des données ######
 dataDir = os.getenv('HOME') + 'git/py-gtk3/Paraguay'
@@ -72,6 +28,7 @@ outDir = os.getenv('HOME') + '/ParaguayOut'
 if not os.path.isdir(outDir):
     print('creating output directory...')
     os.mkdir(outDir)
+pyhrf.verbose.set_verbosity(2)
 
 
 def seuillage(image, seuil):
@@ -225,7 +182,6 @@ J = Y.shape[0]
 l = int(sqrt(J))
 
 
-set_verbosity(2)
 # NbIter, nrls_mean, hrf_mean, hrf_covar, labels_proba, noise_var, \
 # nrls_class_mean, nrls_class_var, beta, drift_coeffs, drift,CONTRAST, CONTRASTVAR, \
 # nrls_criteria, hrf_criteria,labels_criteria, nrls_hrf_criteria, compute_time,compute_time_mean, \
