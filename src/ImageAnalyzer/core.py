@@ -52,6 +52,7 @@ class ImageAnalyzer:
         return image
 
     def ConditionalNRLHist(self, nrls, labels):
+        figures = []
         for m in range(0, self.M):
             q = labels[m, 1, :]
             ind = find(q >= 0.5)
@@ -67,14 +68,17 @@ class ImageAnalyzer:
             m, s = stats.norm.fit(r)
             pdf_g2 = stats.norm.pdf(lnspc2, m, s)
 
-            figure()
+            fg = figure()
             plot(lnspc, pdf_g / len(pdf_g), label="Norm")
             hold(True)
             plot(lnspc2, pdf_g2 / len(pdf_g2), 'k', label="Norm")
             legend(['Posterior: Activated', 'Posterior: Non Activated'])
             # xmin, xmax = min(xt), max(xt)
             # ind2 = find(q <= 0.5)
-        show()
+            figures.append(fg)
+        if self.shower:
+            show()
+        return figures
 
     def lecture_data(self, xmin, xmax, ymin, ymax, start=0, end=-1):
         images = self.images[start:end]
@@ -141,16 +145,16 @@ class ImageAnalyzer:
     #####################
     # flags
     #####################
-    def set_flags(self):
+    def set_flags(self, pl=1, save=1, savepl=1, shower=1, nf=1):
         # pl =0 sans PL ,pl =1 avec PL
-        self.pl = 1
+        self.pl = pl
         # save = 1  les outputs sont sauvgardés
-        self.save = 1
+        self.save = save
         # savepl les PL sont sauvgardés dans le repertoir outDir
-        self.savepl = 1
-        self.shower = 1
+        self.savepl = savepl
+        self.shower = shower
 
-        self.nf = 1
+        self.nf = nf
 
     def gen_hrf(self,
                 nItMin=30,
@@ -240,14 +244,16 @@ class ImageAnalyzer:
         # savefig(outDir+'PL'+str(i)+'bande=' +str(bande)+'beta='+str(beta)+'sigma='+str(sigmaH)+'pl='+str(pl)+'dt='+str(dt)+'thrf'+str(Thrf)+'.png')
         #
         # figure Hrf #######
-        figure((self.nf + 1) * 123)
+        fg = figure((self.nf + 1) * 123)
         title("hrf")
         plot(self.m_H)
         if self.save == 1:
             savefig(self.output_dir + 'hrf bande =' + str(self.bande) + 'beta=' + str(self.beta) + 'sigma= ' +
                     str(self.sigmaH) + 'pl=' + str(self.pl) + 'dt=' + str(self.dt) + 'thrf' + str(self.Thrf) + '.png')
+        return fg
 
     def gen_nrl(self):
+        figures = []
         # figure(55)
         # matshow(reshape(sigma_epsilone,(height,width)))
         # colorbar()
@@ -255,7 +261,7 @@ class ImageAnalyzer:
             hh = self.m_H
             z1 = self.m_A[:, m]
             z2 = reshape(z1, (self.height, self.width))
-            figure((self.nf + 1) * 110)
+            fg = figure((self.nf + 1) * 110)
             # figure Nrl ########,cmap=get_cmap('gray')
             matshow(z2, cmap=get_cmap('gray'))
             colorbar()
@@ -268,6 +274,7 @@ class ImageAnalyzer:
             # q2 = seuillage(q2,0.5)
             matshow(q2, cmap=get_cmap('gray'))
             colorbar()
+            figures.append(fg)
         #   for k in range(0,1):
         #       q = q_Z[m,k,:]
         #       q2 = reshape(q,(height,width))
@@ -287,6 +294,7 @@ class ImageAnalyzer:
         #           savefig(outDir+'Q_avec_seuil bande =' +str(bande)+'beta='+str(beta)+'sigma= '+str(sigmaH)+'pl='+str(pl)+ 'dt='+str(dt)+'thrf'+str(Thrf)+'.png')
         if self.shower == 1:
             show()
+        return figures
 
 
 ######################
@@ -296,6 +304,6 @@ img_analyzer = ImageAnalyzer(['Paraguay/' + f for f in sorted(os.listdir('Paragu
 img_analyzer.lecture_data(2660, 2730, 2600, 2680)
 img_analyzer.post_lecture()
 img_analyzer.init_params()
-img_analyzer.set_flags()
+img_analyzer.set_flags(shower=0)
 img_analyzer.gen_hrf()
 img_analyzer.gen_nrl()

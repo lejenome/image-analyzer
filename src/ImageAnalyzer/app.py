@@ -7,6 +7,7 @@ import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
+from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 
 # imageList.set_sort_func(lambda r1, r2, data, notify_destroy: return -1, None, False)
 # imageList.set_filter_func(lambda r, r2, data, notify_destroy: return True, None, False)
