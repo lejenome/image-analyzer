@@ -51,8 +51,8 @@ class ImageAnalyzer:
                     image[i, j] = 0
         return image
 
-    def ConditionalNRLHist(self, nrls, labels, M, height, width):
-        for m in range(0, M):
+    def ConditionalNRLHist(self, nrls, labels):
+        for m in range(0, self.M):
             q = labels[m, 1, :]
             ind = find(q >= 0.5)
             ind2 = find(q < 0.5)
@@ -107,15 +107,23 @@ class ImageAnalyzer:
     ###############################
     # intialisation des paramètres
     ###############################
-    def init_params(self):
-        self.beta = 0.1
-        self.sigmaH = 0.01
-        self.v_h = 0.1 * self.sigmaH
+    def init_params(self,
+                    beta=0.1,
+                    sigmaH=0.01,
+                    v_h_facture=0.1,
+                    dt=1,
+                    Thrf=4,
+                    TR=1,
+                    K=2,
+                    M=1,
+                    ):
+        self.beta = beta
+        self.sigmaH = sigmaH
+        self.v_h = v_h_facture * sigmaH
         # beta_Q = 0.5
-
-        self.dt = 1
-        self.Thrf = 4
-        self.TR = 1
+        self.dt = dt
+        self.Thrf = Thrf
+        self.TR = TR
         # nf=1
         # for i in range (0,Y.shape[0]) :
         #  figure(nf)
@@ -127,13 +135,8 @@ class ImageAnalyzer:
         #  savefig(outDir+'Image'+str(i)+'bande=' +str(bande)+'_inondation.png')
         #  #savefig(outDir+'Image'+str(i)+'bande=' +str(bande)+'.png')
         #####################################
-        self.nItMin = 30
-        self.nItMax = 30
-
-        self.K = 2
-        self.scale = 1
-
-        self.M = 1
+        self.K = K
+        self.M = M
 
     #####################
     # flags
@@ -141,22 +144,26 @@ class ImageAnalyzer:
     def set_flags(self):
         # pl =0 sans PL ,pl =1 avec PL
         self.pl = 1
-        # estimationSigmah = 0 sans estimation de sigmh , estimationSigmah=1 estimation de sigmah
-        self.estimateSigmaH = 0
-        # estimateBeta = 0 sans estimation de beta , estimateBeta=1 estimation de beta
-        self.estimateBeta = 0
         # save = 1  les outputs sont sauvgardés
         self.save = 1
         # savepl les PL sont sauvgardés dans le repertoir outDir
         self.savepl = 1
         self.shower = 1
 
-        # construction Onsets
-        # Onsets = {'nuages' : array([1,6,7])}
-        self.Onsets = {'nuages': array([0])}
         self.nf = 1
 
-    def gen_hrf(self):
+    def gen_hrf(self,
+                nItMin=30,
+                nItMax=30,
+                estimateSigmaH=0,
+                estimateBeta=0,
+                Onsets={'nuages': array([0])},
+                scale=1,
+                ):
+        # estimationSigmah = 0 sans estimation de sigmh , estimationSigmah=1 estimation de sigmah
+        # estimateBeta = 0 sans estimation de beta , estimateBeta=1 estimation de beta
+        # construction Onsets
+        # Onsets = {'nuages' : array([1,6,7])}
         areas = ['ra']
         labelFields = {}
         cNames = ['inactiv', 'activ']
@@ -201,11 +208,11 @@ class ImageAnalyzer:
         self.m_A, self.m_H, self.q_Z, sigma_epsilone, mu_k, sigma_k, Beta, PL, Sigma_A, XX, Sigma_H = \
             Main_vbjde_Extension_TD(
                 FlagH, hrf0, Sigma_H0, self.height, self.width, q_Z0, FlagZ,
-                self.pl, graph, self.Y, self.Onsets, self.Thrf, self.K, self.TR,
-                self.beta, self.dt, self.scale,
-                self.estimateSigmaH, self.sigmaH, self.nItMin, self.estimateBeta)
+                self.pl, graph, self.Y, Onsets, self.Thrf, self.K, self.TR,
+                self.beta, self.dt, scale,
+                estimateSigmaH, self.sigmaH, nItMin, estimateBeta)
 
-        self.ConditionalNRLHist(self.m_A, self.q_Z, self.M, self.height, self.width)
+        self.ConditionalNRLHist(self.m_A, self.q_Z)
 
         MMin = -1.0  # Y.min()
         MMax = 1.0  # Y.max()
