@@ -31,8 +31,7 @@ class EventHandler():
             self.app.imageList.get_row_at_index(0).destroy()
         old_viewport = self.app.imageScrolled.get_child()
         if old_viewport:
-            old_viewport.remove(old_viewport.get_child())
-            self.app.imageScrolled.remove(old_viewport)
+            old_viewport.destroy()
 
     def on_add_clicked(self, *args):
         """Launch multi-select image file chooser dialog and append new files
@@ -109,8 +108,7 @@ class App:
         # self.imageView.set_from_pixbuf(pixbuf)
         old_viewport = self.imageScrolled.get_child()
         if old_viewport:
-            old_viewport.remove(old_viewport.get_child())
-            self.imageScrolled.remove(old_viewport)
+            old_viewport.destroy()
         with TiffFile(name) as img:
             fig = imshow(img.asarray())[0]
             self.imageScrolled.add_with_viewport(FigureCanvas(fig))
