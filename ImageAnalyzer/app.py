@@ -124,7 +124,13 @@ class App:
         """
         it = Gtk.ListBoxRow()
         it.data = name
-        it.add(Gtk.Label(name.split('/')[-1]))
+        name_shorten = name.split('/')[-1]
+        name_shorten = name_shorten.split('.')[0]
+        try:
+            name_shorten = name_shorten.split('_')[3]
+        except:
+            pass
+        it.add(Gtk.Label(name_shorten))
         self.imageList.add(it)
 
     def add_images(self, names):
