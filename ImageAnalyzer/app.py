@@ -4,10 +4,12 @@
 """Gtk Interface for Image Analyzer using glade template"""
 
 import os
+import matplotlib.pyplot
+from tifffile import imread, imshow
+from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
-from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 
 # imageList.set_sort_func(lambda r1, r2, data, notify_destroy: return -1, None, False)
 # imageList.set_filter_func(lambda r, r2, data, notify_destroy: return True, None, False)
@@ -81,6 +83,7 @@ class App:
 
         self.imageList = self.builder.get_object("listbox1")
         self.imageView = self.builder.get_object('image1')
+        self.imageViewPort = self.builder.get_object('viewport2')
         self.imageList.connect('row-activated', lambda w, row: self.show_image(row.data))
 
     def run(self):
