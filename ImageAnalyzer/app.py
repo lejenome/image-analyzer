@@ -4,8 +4,8 @@
 """Gtk Interface for Image Analyzer using glade template"""
 
 import os
-import matplotlib.pyplot
-from tifffile import imread, imshow
+from matplotlib import pyplot
+from tifffile import imread, imshow, TiffFile
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 import gi
 gi.require_version('Gtk', '3.0')
@@ -27,7 +27,12 @@ class EventHandler():
 
     def on_clear_clicked(self, *args):
         """clear images list and image view"""
-        self.app.imageView.clear()
+        while self.app.imageList.get_row_at_index(0):
+            self.app.imageList.get_row_at_index(0).destroy()
+        old_viewport = self.app.imageScrolled.get_child()
+        if old_viewport:
+            old_viewport.remove(old_viewport.get_child())
+            self.app.imageScrolled.remove(old_viewport)
 
     def on_add_clicked(self, *args):
         """Launch multi-select image file chooser dialog and append new files
@@ -82,8 +87,8 @@ class App:
         self.win.about = self.builder.get_object('aboutdialog1')
 
         self.imageList = self.builder.get_object("listbox1")
-        self.imageView = self.builder.get_object('image1')
-        self.imageViewPort = self.builder.get_object('viewport2')
+        # self.imageView = self.builder.get_object('image1')
+        self.imageScrolled = self.builder.get_object('scrolledwindow4')
         self.imageList.connect('row-activated', lambda w, row: self.show_image(row.data))
 
     def run(self):
@@ -99,9 +104,18 @@ class App:
         :param name: image file path
         :type name: str
         """
-        size = self.imageView.get_allocation()
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(name, size.width, size.height)
-        self.imageView.set_from_pixbuf(pixbuf)
+        # size = self.imageView.get_allocation()
+        # pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(name, size.width, size.height)
+        # self.imageView.set_from_pixbuf(pixbuf)
+        old_viewport = self.imageScrolled.get_child()
+        if old_viewport:
+            old_viewport.remove(old_viewport.get_child())
+            self.imageScrolled.remove(old_viewport)
+        with TiffFile(name) as img:
+            fig = imshow(img.asarray())[0]
+            self.imageScrolled.add_with_viewport(FigureCanvas(fig))
+            pyplot.close(fig)
+        self.imageScrolled.show_all()
 
     # ajouter image dans la liste
     def add_image(self, name):
