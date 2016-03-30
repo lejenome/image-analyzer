@@ -7,6 +7,7 @@ import os
 from matplotlib import pyplot
 from tifffile import imread, imshow, TiffFile
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
+from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as NavigationToolbar
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
@@ -39,6 +40,11 @@ class EventHandler():
         old_viewport = self.app.resultScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
+        self.app.xmin.set_value(2658)
+        self.app.xmax.set_value(2730)
+        self.app.ymin.set_value(2600)
+        self.app.ymax.set_value(2680)
+        self.app.notebook.set_current_page(0)
 
     def on_add_clicked(self, *args):
         """Launch multi-select image file chooser dialog and append new files
@@ -73,12 +79,21 @@ class EventHandler():
         # .destroy
 
     def on_about_closed(self, *args):
+        """close about dialog"""
         self.app.win.about.hide()
 
     def on_search_changed(self, *args):
         self.app.imageList.invalidate_filter()
 
     def on_exec_clicked(self, *args):
+        """analyser les images importées
+        """
+        while self.app.resultList.get_row_at_index(0):
+            self.app.resultList.get_row_at_index(0).destroy()
+        old_viewport = self.app.resultScrolled.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+
         imgs = []
         i = 0
 
@@ -86,7 +101,6 @@ class EventHandler():
             imgs.append(self.app.imageList.get_row_at_index(i).data)
             i += 1
         img_analyzer = ImageAnalyzer(sorted(imgs))
-        xmin = self.app.xmin.get_value_as_int()
         img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
                                   self.app.xmax.get_value_as_int(),
                                   self.app.ymin.get_value_as_int(),
@@ -105,6 +119,12 @@ class EventHandler():
         for fig in fgs2:
             self.app.add_result('nrl' + str(i), fig)
             i += 1
+        self.app.notebook.set_current_page(2)
+
+        def on_item_delete(self, widget, ev, args):
+            if ev.keyval == Gdk.KEY_Delete:
+                r = self.imageList.get_selected_row()
+                r.destroy()
 
 
 class App:
@@ -136,10 +156,25 @@ class App:
         self.search = self.builder.get_object('searchentry1')
         self.imageList.set_filter_func(self.filter_images, self.search)
 
-        self.xmin = self.builder.get_object('xmin')
-        self.xmax = self.builder.get_object('xmax')
-        self.ymin = self.builder.get_object('ymin')
-        self.ymax = self.builder.get_object('ymax')
+        self.xmin = self.builder.get_object('xmin2')
+        self.xmax = self.builder.get_object('xmax2')
+        self.ymin = self.builder.get_object('ymin2')
+        self.ymax = self.builder.get_object('ymax2')
+        self.notebook = self.builder.get_object('notebook1')
+        self.ImageBox = self.builder.get_object('scrolledwindow5')
+        self.ResultBox = self.builder.get_object('scrolledwindow6')
+        self.sigmah = self.builder.get_object('sigmah')
+        self.beta = self.builder.get_object('beta')
+        self.thrf = self.builder.get_object('thrf')
+        self.vh = self.builder.get_object('vh')
+        self.dt = self.builder.get_object('dt')
+        self.tr = self.builder.get_object('tr')
+        self.nitmin = self.builder.get_object('nitmin')
+        self.nitmax = self.builder.get_object('nitmax')
+        self.m = self.builder.get_object('m')
+        self.k = self.builder.get_object('k')
+        self.scale = self.builder.get_object('scale')
+        self.pl = self.builder.get_object('pl')
 
     def run(self):
         """connect signals and run Gtk window"""
@@ -166,10 +201,17 @@ class App:
         old_viewport = self.imageScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
+        old_viewport = self.ImageBox.get_child()
+        if old_viewport:
+            old_viewport.destroy()
         with TiffFile(name) as img:
             fig = imshow(img.asarray())[0]
-            self.imageScrolled.add_with_viewport(FigureCanvas(fig))
+            canvas = FigureCanvas(fig)
+            self.imageScrolled.add_with_viewport(canvas)
+            toolbar = NavigationToolbar(canvas, self.win)
+            self.ImageBox.add_with_viewport(toolbar)
             pyplot.close(fig)
+
         self.imageScrolled.show_all()
 
     # ajouter image dans la liste
@@ -202,7 +244,13 @@ class App:
         self.show_image(names[-1])
 
     def add_result(self, name, fig):
-        print("add", name)
+        """ajouter un nouveau row avec le nom de l'image et enregister l'object fig on attr data
+
+        :param name: chemin du fichier image à ajouter
+        :type name: str
+        :param fig: l'objet figure genereté par imread
+        :type fig: matplotlib.figure.Figure
+        """
         it = Gtk.ListBoxRow()
         it.data = fig
         it.add(Gtk.Label(name))
@@ -214,5 +262,11 @@ class App:
         old_viewport = self.resultScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
-        self.resultScrolled.add_with_viewport(FigureCanvas(fig))
+        old_viewport = self.ResultBox.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+        canvas = FigureCanvas(fig)
+        self.resultScrolled.add_with_viewport(canvas)
+        toolbar = NavigationToolbar(canvas, self.win)
+        self.ResultBox.add_with_viewport(toolbar)
         self.resultScrolled.show_all()

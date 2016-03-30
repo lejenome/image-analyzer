@@ -306,10 +306,12 @@ class ImageAnalyzer:
 # lecture des données
 ######################
 if __name__ == "__main__":
-    img_analyzer = ImageAnalyzer(['Paraguay/' + f for f in sorted(os.listdir('Paraguay/'))])
+    imgs = ['Paraguay/' + f for f in sorted(os.listdir('Paraguay/'))]
+    print(imgs)
+    img_analyzer = ImageAnalyzer(imgs)
     img_analyzer.lecture_data(2658, 2730, 2600, 2680)
     img_analyzer.post_lecture()
     img_analyzer.init_params()
-    img_analyzer.set_flags(shower=0)
+    img_analyzer.set_flags(shower=1)
     img_analyzer.gen_hrf()
     img_analyzer.gen_nrl()
