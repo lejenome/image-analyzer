@@ -537,6 +537,7 @@ THE SOFTWARE.
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
+                        <property name="min_content_height">45</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -992,6 +993,7 @@ THE SOFTWARE.
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
+                        <property name="min_content_height">45</property>
                         <child>
                           <placeholder/>
                         </child>

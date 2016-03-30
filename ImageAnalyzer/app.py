@@ -161,8 +161,8 @@ class App:
         self.ymin = self.builder.get_object('ymin2')
         self.ymax = self.builder.get_object('ymax2')
         self.notebook = self.builder.get_object('notebook1')
-        self.ImageBox = self.builder.get_object('scrolledwindow5')
-        self.ResultBox = self.builder.get_object('scrolledwindow6')
+        self.imageBox = self.builder.get_object('scrolledwindow5')
+        self.resultBox = self.builder.get_object('scrolledwindow6')
         self.sigmah = self.builder.get_object('sigmah')
         self.beta = self.builder.get_object('beta')
         self.thrf = self.builder.get_object('thrf')
@@ -201,7 +201,7 @@ class App:
         old_viewport = self.imageScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
-        old_viewport = self.ImageBox.get_child()
+        old_viewport = self.imageBox.get_child()
         if old_viewport:
             old_viewport.destroy()
         with TiffFile(name) as img:
@@ -209,7 +209,8 @@ class App:
             canvas = FigureCanvas(fig)
             self.imageScrolled.add_with_viewport(canvas)
             toolbar = NavigationToolbar(canvas, self.win)
-            self.ImageBox.add_with_viewport(toolbar)
+            self.imageBox.add_with_viewport(toolbar)
+            print("add toolbar", toolbar)
             pyplot.close(fig)
 
         self.imageScrolled.show_all()
@@ -262,11 +263,11 @@ class App:
         old_viewport = self.resultScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
-        old_viewport = self.ResultBox.get_child()
+        old_viewport = self.resultBox.get_child()
         if old_viewport:
             old_viewport.destroy()
         canvas = FigureCanvas(fig)
         self.resultScrolled.add_with_viewport(canvas)
         toolbar = NavigationToolbar(canvas, self.win)
-        self.ResultBox.add_with_viewport(toolbar)
+        self.resultBox.add_with_viewport(toolbar)
         self.resultScrolled.show_all()
