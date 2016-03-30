@@ -13,7 +13,7 @@ from pylab import (
 )
 
 from scipy import stats
-from matplotlib.pyplot import get_cmap, cm
+from matplotlib.pyplot import get_cmap, cm, subplots
 from pyhrf.boldsynth.hrf import getCanoHRF
 from pyhrf.graph import graph_from_lattice
 from pyhrf.vbjde.Utils import Main_vbjde_Extension_TD
@@ -216,7 +216,7 @@ class ImageAnalyzer:
                 self.beta, self.dt, scale,
                 estimateSigmaH, self.sigmaH, nItMin, estimateBeta)
 
-        self.ConditionalNRLHist(self.m_A, self.q_Z)
+        fgs = self.ConditionalNRLHist(self.m_A, self.q_Z)
 
         MMin = -1.0  # Y.min()
         MMax = 1.0  # Y.max()
@@ -244,13 +244,15 @@ class ImageAnalyzer:
         # savefig(outDir+'PL'+str(i)+'bande=' +str(bande)+'beta='+str(beta)+'sigma='+str(sigmaH)+'pl='+str(pl)+'dt='+str(dt)+'thrf'+str(Thrf)+'.png')
         #
         # figure Hrf #######
-        fg = figure((self.nf + 1) * 123)
+        fgs.insert(0, figure((self.nf + 1) * 123))
         title("hrf")
         plot(self.m_H)
         if self.save == 1:
             savefig(self.output_dir + 'hrf bande =' + str(self.bande) + 'beta=' + str(self.beta) + 'sigma= ' +
                     str(self.sigmaH) + 'pl=' + str(self.pl) + 'dt=' + str(self.dt) + 'thrf' + str(self.Thrf) + '.png')
-        return fg
+        if self.shower == 1:
+            show()
+        return fgs
 
     def gen_nrl(self):
         figures = []
@@ -262,9 +264,11 @@ class ImageAnalyzer:
             z1 = self.m_A[:, m]
             z2 = reshape(z1, (self.height, self.width))
             fg = figure((self.nf + 1) * 110)
+            fig, ax = subplots()
             # figure Nrl ########,cmap=get_cmap('gray')
-            matshow(z2, cmap=get_cmap('gray'))
-            colorbar()
+            data = ax.matshow(z2, cmap=get_cmap('gray'))
+            fig.colorbar(data)
+            figures.append(fig)
             # title("Est: m = " + str(m))
             if self.save == 1:
                 savefig(self.output_dir + 'nrl bande =' + str(self.bande) + 'beta=' + str(self.beta) + 'sigma= ' +
@@ -272,9 +276,10 @@ class ImageAnalyzer:
             q = self.q_Z[m, 1, :]
             q2 = reshape(q, (self.height, self.width))
             # q2 = seuillage(q2,0.5)
-            matshow(q2, cmap=get_cmap('gray'))
-            colorbar()
-            figures.append(fg)
+            fig, ax = subplots()
+            data = ax.matshow(q2, cmap=get_cmap('gray'))
+            fig.colorbar(data)
+            figures.append(fig)
         #   for k in range(0,1):
         #       q = q_Z[m,k,:]
         #       q2 = reshape(q,(height,width))
@@ -300,10 +305,11 @@ class ImageAnalyzer:
 ######################
 # lecture des données
 ######################
-img_analyzer = ImageAnalyzer(['Paraguay/' + f for f in sorted(os.listdir('Paraguay/'))])
-img_analyzer.lecture_data(2660, 2730, 2600, 2680)
-img_analyzer.post_lecture()
-img_analyzer.init_params()
-img_analyzer.set_flags(shower=0)
-img_analyzer.gen_hrf()
-img_analyzer.gen_nrl()
+if __name__ == "__main__":
+    img_analyzer = ImageAnalyzer(['Paraguay/' + f for f in sorted(os.listdir('Paraguay/'))])
+    img_analyzer.lecture_data(2658, 2730, 2600, 2680)
+    img_analyzer.post_lecture()
+    img_analyzer.init_params()
+    img_analyzer.set_flags(shower=0)
+    img_analyzer.gen_hrf()
+    img_analyzer.gen_nrl()

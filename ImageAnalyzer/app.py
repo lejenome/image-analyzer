@@ -11,6 +11,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
+from ImageAnalyzer.core import ImageAnalyzer
+
 # imageList.set_sort_func(lambda r1, r2, data, notify_destroy: return -1, None, False)
 # imageList.set_filter_func(lambda r, r2, data, notify_destroy: return True, None, False)
 
@@ -29,7 +31,12 @@ class EventHandler():
         """clear images list and image view"""
         while self.app.imageList.get_row_at_index(0):
             self.app.imageList.get_row_at_index(0).destroy()
+        while self.app.resultList.get_row_at_index(0):
+            self.app.resultList.get_row_at_index(0).destroy()
         old_viewport = self.app.imageScrolled.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+        old_viewport = self.app.resultScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
 
@@ -44,7 +51,10 @@ class EventHandler():
 
         image_filter = Gtk.FileFilter()
         image_filter.set_name("Image files")
-        image_filter.add_pixbuf_formats()
+        image_filter.add_pattern("*.tiff")
+        image_filter.add_pattern("*.TIIF")
+        image_filter.add_pattern("*.TIF")
+        image_filter.add_pattern("*.tif")
         # any_filter = Gtk.FileFilter()
         # any_filter.set_name("Any files")
         # any_filter.add_pattern("*")
@@ -63,11 +73,33 @@ class EventHandler():
         # .destroy
 
     def on_about_closed(self, *args):
-        print("on_about_closed")
         self.app.win.about.hide()
 
     def on_search_changed(self, *args):
         self.app.imageList.invalidate_filter()
+
+    def on_exec_clicked(self, *args):
+        imgs = []
+        i = 0
+        while self.app.imageList.get_row_at_index(i):
+            imgs.append(self.app.imageList.get_row_at_index(i).data)
+            i += 1
+        img_analyzer = ImageAnalyzer(sorted(imgs))
+        img_analyzer.lecture_data(2658, 2730, 2600, 2680)
+        img_analyzer.post_lecture()
+        img_analyzer.init_params()
+        img_analyzer.set_flags(shower=0)
+        fgs1 = img_analyzer.gen_hrf()
+        fgs2 = img_analyzer.gen_nrl()
+
+        i = 0
+        for fig in fgs1:
+            self.app.add_result('hrf' + str(i), fig)
+            i += 1
+        i = 0
+        for fig in fgs2:
+            self.app.add_result('nrl' + str(i), fig)
+            i += 1
 
 
 class App:
@@ -89,9 +121,12 @@ class App:
         self.win.about = self.builder.get_object('aboutdialog1')
 
         self.imageList = self.builder.get_object("listbox1")
-        # self.imageView = self.builder.get_object('image1')
-        self.imageScrolled = self.builder.get_object('scrolledwindow4')
+        self.imageScrolled = self.builder.get_object('scrolledwindow2')
         self.imageList.connect('row-activated', lambda w, row: self.show_image(row.data))
+
+        self.resultList = self.builder.get_object("listbox2")
+        self.resultScrolled = self.builder.get_object('scrolledwindow1')
+        self.resultList.connect('row-activated', lambda w, row: self.show_result(row.data))
 
         self.search = self.builder.get_object('searchentry1')
         self.imageList.set_filter_func(self.filter_images, self.search)
@@ -103,7 +138,6 @@ class App:
         Gtk.main()
 
     def filter_images(self, row, search):
-        print(self, row, search)
         if not search.get_text():
             return True
         else:
@@ -156,3 +190,19 @@ class App:
             self.add_image(name)
         self.imageList.show_all()
         self.show_image(names[-1])
+
+    def add_result(self, name, fig):
+        print("add", name)
+        it = Gtk.ListBoxRow()
+        it.data = fig
+        it.add(Gtk.Label(name))
+        self.resultList.add(it)
+        self.resultList.show_all()
+
+    def show_result(self, fig):
+        print("show result")
+        old_viewport = self.resultScrolled.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+        self.resultScrolled.add_with_viewport(FigureCanvas(fig))
+        self.resultScrolled.show_all()
