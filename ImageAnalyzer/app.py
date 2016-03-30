@@ -66,6 +66,9 @@ class EventHandler():
         print("on_about_closed")
         self.app.win.about.hide()
 
+    def on_search_changed(self, *args):
+        self.app.imageList.invalidate_filter()
+
 
 class App:
     """main logic for the graphical interface
@@ -90,11 +93,21 @@ class App:
         self.imageScrolled = self.builder.get_object('scrolledwindow4')
         self.imageList.connect('row-activated', lambda w, row: self.show_image(row.data))
 
+        self.search = self.builder.get_object('searchentry1')
+        self.imageList.set_filter_func(self.filter_images, self.search)
+
     def run(self):
         """connect signals and run Gtk window"""
         self.builder.connect_signals(EventHandler(self))
         self.win.show_all()
         Gtk.main()
+
+    def filter_images(self, row, search):
+        print(self, row, search)
+        if not search.get_text():
+            return True
+        else:
+            return search.get_text().strip().lower() in row.data
 
     # ajouter image dans View
     def show_image(self, name):
