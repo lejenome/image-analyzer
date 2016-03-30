@@ -81,11 +81,16 @@ class EventHandler():
     def on_exec_clicked(self, *args):
         imgs = []
         i = 0
+
         while self.app.imageList.get_row_at_index(i):
             imgs.append(self.app.imageList.get_row_at_index(i).data)
             i += 1
         img_analyzer = ImageAnalyzer(sorted(imgs))
-        img_analyzer.lecture_data(2658, 2730, 2600, 2680)
+        xmin = self.app.xmin.get_value_as_int()
+        img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
+                                  self.app.xmax.get_value_as_int(),
+                                  self.app.ymin.get_value_as_int(),
+                                  self.app.ymax.get_value_as_int())
         img_analyzer.post_lecture()
         img_analyzer.init_params()
         img_analyzer.set_flags(shower=0)
@@ -130,6 +135,11 @@ class App:
 
         self.search = self.builder.get_object('searchentry1')
         self.imageList.set_filter_func(self.filter_images, self.search)
+
+        self.xmin = self.builder.get_object('xmin')
+        self.xmax = self.builder.get_object('xmax')
+        self.ymin = self.builder.get_object('ymin')
+        self.ymax = self.builder.get_object('ymax')
 
     def run(self):
         """connect signals and run Gtk window"""

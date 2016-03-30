@@ -28,9 +28,11 @@ setup(
     tests_require=[
     ],
     scripts=[
-        'bin/image-analyzer',
+        'image-analyzer',
     ],
-    package_dir={'': 'src'},
+    packages=['ImageAnalyzer'],
+    # package_dir={'': 'src'},
+    package_data={'ImageAnalyzer': ['ImageAnalyzer/app.glade']},
     # platforms=["any"],
     platforms=["linux"],
     classifiers=[
