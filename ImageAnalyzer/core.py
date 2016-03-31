@@ -145,7 +145,7 @@ class ImageAnalyzer:
     #####################
     # flags
     #####################
-    def set_flags(self, pl=1, save=1, savepl=1, shower=1, nf=1):
+    def set_flags(self, pl=1, save=0, savepl=1, shower=0, nf=1):
         # pl =0 sans PL ,pl =1 avec PL
         self.pl = pl
         # save = 1  les outputs sont sauvgardés
@@ -338,6 +338,6 @@ if __name__ == "__main__":
     img_analyzer.lecture_data(2658, 2730, 2600, 2680)
     img_analyzer.post_lecture()
     img_analyzer.init_params()
-    img_analyzer.set_flags(shower=1)
+    img_analyzer.set_flags(shower=1, save=1)
     img_analyzer.gen_hrf()
     img_analyzer.gen_nrl()

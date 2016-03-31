@@ -93,7 +93,7 @@ class EventHandler():
                                   self.app.ymax.get_value_as_int())
         img_analyzer.post_lecture()
         img_analyzer.init_params()
-        img_analyzer.set_flags(shower=0)
+        img_analyzer.set_flags()
         fgs1 = img_analyzer.gen_hrf()
         fgs2 = img_analyzer.gen_nrl()
 
