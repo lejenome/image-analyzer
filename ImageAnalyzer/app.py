@@ -249,6 +249,13 @@ class App:
         :param name: image file path
         :type name: str
         """
+
+        i = 0
+        while self.imageList.get_row_at_index(i):
+            if self.imageList.get_row_at_index(i).data == name:
+                return
+            i += 1
+
         it = Gtk.ListBoxRow()
         it.data = name
         name_shorten = name.split('/')[-1]
