@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from gi.repository import Gtk, Gdk, GdkPixbuf
+from .core import ImageAnalyzer
 
 
 class EventHandler():
@@ -28,6 +29,18 @@ class EventHandler():
         self.app.xmax.set_value(2730)
         self.app.ymin.set_value(2600)
         self.app.ymax.set_value(2680)
+        self.app.beta.set_value(0.1)
+        self.app.sigmah.set_value(0.01)
+        self.app.vh.set_value(0.1)
+        self.app.dt.set_value(1)
+        self.app.thrf.set_value(4)
+        self.app.tr.set_value(1)
+        self.app.k.set_value(2)
+        self.app.m.set_value(1)
+        self.app.nitmin.set_value(30)
+        self.app.nitmax.set_value(30)
+        self.app.scale.set_value(1)
+        self.app.pl.set_active(True)
         self.app.notebook.set_current_page(0)
 
     def on_add_clicked(self, *args):
@@ -92,9 +105,20 @@ class EventHandler():
                                   self.app.ymin.get_value_as_int(),
                                   self.app.ymax.get_value_as_int())
         img_analyzer.post_lecture()
-        img_analyzer.init_params()
-        img_analyzer.set_flags()
-        fgs1 = img_analyzer.gen_hrf()
+        img_analyzer.init_params(beta=self.app.beta.get_value(),
+                                 sigmaH=self.app.sigmah.get_value(),
+                                 v_h_facture=self.app.vh.get_value_as_int(),
+                                 dt=self.app.dt.get_value_as_int(),
+                                 Thrf=self.app.thrf.get_value_as_int(),
+                                 TR=self.app.tr.get_value_as_int(),
+                                 K=self.app.k.get_value_as_int(),
+                                 M=self.app.m.get_value_as_int(),
+        )
+        img_analyzer.set_flags(pl=1 if self.app.pl.get_active() else 0)
+        fgs1 = img_analyzer.gen_hrf(nItMin=self.app.nitmin.get_value_as_int(),
+                                    nItMax=self.app.nitmax.get_value_as_int(),
+                                    scale=self.app.scale.get_value_as_int(),
+        )
         fgs2 = img_analyzer.gen_nrl()
 
         i = 0
