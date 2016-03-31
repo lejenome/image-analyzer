@@ -129,6 +129,22 @@ class EventHandler():
             if r:
                 r.destroy()
 
+    def on_xmin_changed(self, *args):
+        print("changed")
+        self.app.xmax.set_range(self.app.xmin.get_value_as_int() + 1, self.app.shape[0])
+
+    def on_xmax_changed(self, *args):
+        print("changed")
+        self.app.xmin.set_range(0, self.app.xmax.get_value_as_int() - 1)
+
+    def on_ymin_changed(self, *args):
+        print("changed")
+        self.app.ymax.set_range(self.app.ymin.get_value_as_int() + 1, self.app.shape[1])
+
+    def on_ymax_changed(self, *args):
+        print("changed")
+        self.app.ymin.set_range(0, self.app.ymax.get_value_as_int() - 1)
+
 
 class App:
     """main logic for the graphical interface
@@ -182,6 +198,7 @@ class App:
         self.k = self.builder.get_object('k')
         self.scale = self.builder.get_object('scale')
         self.pl = self.builder.get_object('pl')
+        self.shape = (0, 5000)
 
     def run(self):
         """connect signals and run Gtk window"""
@@ -218,6 +235,10 @@ class App:
             toolbar = NavigationToolbar(canvas, self.win)
             self.imageBox.add_with_viewport(toolbar)
             pyplot.close(fig)
+
+            self.shape = img.asarray().shape
+            self.xmax.set_range(self.xmin.get_value_as_int() + 1, self.shape[0])
+            self.ymax.set_range(self.ymin.get_value_as_int() + 1, self.shape[1])
 
         self.imageScrolled.show_all()
 

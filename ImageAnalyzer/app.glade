@@ -435,6 +435,7 @@ THE SOFTWARE.
                             <property name="adjustment">adjustment_xmax</property>
                             <property name="numeric">True</property>
                             <property name="update_policy">if-valid</property>
+                            <signal name="change-value" handler="on_xmax_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -448,6 +449,7 @@ THE SOFTWARE.
                             <property name="adjustment">adjustment_xmin</property>
                             <property name="numeric">True</property>
                             <property name="update_policy">if-valid</property>
+                            <signal name="change-value" handler="on_xmin_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -461,6 +463,7 @@ THE SOFTWARE.
                             <property name="adjustment">adjustment_Ymax</property>
                             <property name="numeric">True</property>
                             <property name="update_policy">if-valid</property>
+                            <signal name="change-value" handler="on_ymax_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left_attach">5</property>
@@ -474,6 +477,7 @@ THE SOFTWARE.
                             <property name="adjustment">adjustment_ymin</property>
                             <property name="numeric">True</property>
                             <property name="update_policy">if-valid</property>
+                            <signal name="change-value" handler="on_ymin_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left_attach">5</property>
