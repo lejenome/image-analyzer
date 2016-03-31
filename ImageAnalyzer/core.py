@@ -9,7 +9,7 @@ from numpy import (
 )
 from pylab import (
     show, legend, hold, matshow, colorbar, reshape, savefig, std, mean, title,
-    plot, figure, find
+    plot, figure, find, figtext, suptitle
 )
 
 from scipy import stats
@@ -245,7 +245,15 @@ class ImageAnalyzer:
         #
         # figure Hrf #######
         fgs.insert(0, figure((self.nf + 1) * 123))
-        title("hrf")
+        title("hrf", fontsize='xx-large')
+        figtext(0.4, 0.04,
+                'bande = ' + str(self.bande) +
+                ' beta =' + str(self.beta) +
+                ' sigma = ' + str(self.sigmaH) +
+                ' pl = ' + str(self.pl) +
+                ' dt = ' + str(self.dt) +
+                ' thrf = ' + str(self.Thrf),
+                fontsize='x-large')
         plot(self.m_H)
         if self.save == 1:
             savefig(self.output_dir + 'hrf bande =' + str(self.bande) + 'beta=' + str(self.beta) + 'sigma= ' +
@@ -268,6 +276,15 @@ class ImageAnalyzer:
             # figure Nrl ########,cmap=get_cmap('gray')
             data = ax.matshow(z2, cmap=get_cmap('gray'))
             fig.colorbar(data)
+            title("nrl", fontsize='xx-large')
+            figtext(0.4, 0.04,
+                    'bande = ' + str(self.bande) +
+                    ' beta =' + str(self.beta) +
+                    ' sigma = ' + str(self.sigmaH) +
+                    ' pl = ' + str(self.pl) +
+                    ' dt = ' + str(self.dt) +
+                    ' thrf = ' + str(self.Thrf),
+                    fontsize='x-large')
             figures.append(fig)
             # title("Est: m = " + str(m))
             if self.save == 1:
@@ -279,6 +296,15 @@ class ImageAnalyzer:
             fig, ax = subplots()
             data = ax.matshow(q2, cmap=get_cmap('gray'))
             fig.colorbar(data)
+            title("nrl", fontsize='xx-large')
+            figtext(0.4, 0.04,
+                    'bande = ' + str(self.bande) +
+                    ' beta =' + str(self.beta) +
+                    ' sigma = ' + str(self.sigmaH) +
+                    ' pl = ' + str(self.pl) +
+                    ' dt = ' + str(self.dt) +
+                    ' thrf = ' + str(self.Thrf),
+                    fontsize='x-large')
             figures.append(fig)
         #   for k in range(0,1):
         #       q = q_Z[m,k,:]
