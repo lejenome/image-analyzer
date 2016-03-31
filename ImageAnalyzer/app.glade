@@ -28,11 +28,6 @@ THE SOFTWARE.
   <requires lib="gtk+" version="3.10"/>
   <!-- interface-license-type mit -->
   <!-- interface-name Image Analyzer -->
-  <object class="GtkAdjustment" id="adjustment5">
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkAdjustment" id="adjustment_K">
     <property name="upper">100</property>
     <property name="value">2</property>
@@ -123,26 +118,26 @@ THE SOFTWARE.
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkImage" id="image2">
+  <object class="GtkImage" id="image_add">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-new</property>
+  </object>
+  <object class="GtkImage" id="image_clear">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-clear</property>
+  </object>
+  <object class="GtkImage" id="image_exec">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="margin_top">1</property>
     <property name="stock">gtk-execute</property>
   </object>
-  <object class="GtkImage" id="image3">
+  <object class="GtkImage" id="image_save">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-directory</property>
-  </object>
-  <object class="GtkImage" id="image4">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-new</property>
-  </object>
-  <object class="GtkImage" id="image6">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-clear</property>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
@@ -262,12 +257,12 @@ THE SOFTWARE.
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkButton" id="button3">
+              <object class="GtkButton" id="button_add">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Open images</property>
-                <property name="image">image4</property>
+                <property name="image">image_add</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_add_clicked" swapped="no"/>
@@ -278,12 +273,12 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button5">
+              <object class="GtkButton" id="button_clear">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Reset to the default values</property>
-                <property name="image">image6</property>
+                <property name="image">image_clear</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_clear_clicked" swapped="no"/>
@@ -294,12 +289,12 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button7">
+              <object class="GtkButton" id="button_exec">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Execute</property>
-                <property name="image">image2</property>
+                <property name="image">image_exec</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_exec_clicked" swapped="no"/>
@@ -310,13 +305,13 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button9">
+              <object class="GtkButton" id="button_save">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Go to the generated directory</property>
-                <property name="image">image3</property>
+                <property name="image">image_save</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_save_clicked" swapped="no"/>
@@ -366,6 +361,7 @@ THE SOFTWARE.
                       <object class="GtkGrid" id="grid3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="column_spacing">5</property>
                         <child>
                           <object class="GtkLabel" id="label18">
                             <property name="visible">True</property>
@@ -485,22 +481,7 @@ THE SOFTWARE.
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxText" id="comboboxtext3">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="active">0</property>
-                            <items>
-                              <item translatable="yes">1000.0</item>
-                              <item translatable="yes">500</item>
-                            </items>
-                          </object>
-                          <packing>
-                            <property name="left_attach">3</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkComboBoxText" id="comboboxtext4">
+                          <object class="GtkComboBoxText" id="bande">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="active">0</property>
@@ -511,6 +492,30 @@ THE SOFTWARE.
                           <packing>
                             <property name="left_attach">3</property>
                             <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="facteur">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="active">0</property>
+                            <property name="has_entry">True</property>
+                            <property name="active_id">0</property>
+                            <items>
+                              <item id="0" translatable="yes">1000.0</item>
+                              <item id="1" translatable="yes">500.0</item>
+                            </items>
+                            <child internal-child="entry">
+                              <object class="GtkEntry" id="s">
+                                <property name="can_focus">False</property>
+                                <property name="text" translatable="yes">500.0</property>
+                                <property name="input_purpose">digits</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">3</property>
+                            <property name="top_attach">0</property>
                           </packing>
                         </child>
                       </object>
@@ -641,6 +646,7 @@ THE SOFTWARE.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="row_spacing">44</property>
+                <property name="column_spacing">10</property>
                 <child>
                   <object class="GtkLabel" id="label_s">
                     <property name="visible">True</property>
@@ -932,7 +938,7 @@ THE SOFTWARE.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton" id="checkbutton2">
+                  <object class="GtkCheckButton" id="pl">
                     <property name="label" translatable="yes">PL</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>

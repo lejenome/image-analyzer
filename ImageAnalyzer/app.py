@@ -100,7 +100,9 @@ class EventHandler():
         while self.app.imageList.get_row_at_index(i):
             imgs.append(self.app.imageList.get_row_at_index(i).data)
             i += 1
-        img_analyzer = ImageAnalyzer(sorted(imgs))
+        img_analyzer = ImageAnalyzer(sorted(imgs),
+                                     bande=float(self.app.bande.get_active_text()),
+                                     facteur=float(self.app.facteur.get_active_text()))
         img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
                                   self.app.xmax.get_value_as_int(),
                                   self.app.ymin.get_value_as_int(),
@@ -160,9 +162,13 @@ class App:
         self.xmax = self.builder.get_object('xmax2')
         self.ymin = self.builder.get_object('ymin2')
         self.ymax = self.builder.get_object('ymax2')
+        self.facteur = self.builder.get_object('facteur')
+        self.bande = self.builder.get_object('bande')
+
         self.notebook = self.builder.get_object('notebook1')
         self.imageBox = self.builder.get_object('scrolledwindow5')
         self.resultBox = self.builder.get_object('scrolledwindow6')
+
         self.sigmah = self.builder.get_object('sigmah')
         self.beta = self.builder.get_object('beta')
         self.thrf = self.builder.get_object('thrf')
@@ -210,7 +216,6 @@ class App:
             self.imageScrolled.add_with_viewport(canvas)
             toolbar = NavigationToolbar(canvas, self.win)
             self.imageBox.add_with_viewport(toolbar)
-            print("add toolbar", toolbar)
             pyplot.close(fig)
 
         self.imageScrolled.show_all()
@@ -259,7 +264,6 @@ class App:
         self.resultList.show_all()
 
     def show_result(self, fig):
-        print("show result")
         old_viewport = self.resultScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()
