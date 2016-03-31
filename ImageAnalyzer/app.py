@@ -177,3 +177,7 @@ class App:
         toolbar = NavigationToolbar(canvas, self.win)
         self.resultBox.add_with_viewport(toolbar)
         self.resultScrolled.show_all()
+
+if __name__ == '__main__':
+    app = App()
+    app.run()
