@@ -1,0 +1,130 @@
+# -*- coding: utf-8 -*-
+from gi.repository import Gtk, Gdk, GdkPixbuf
+
+
+class EventHandler():
+    """Signal Event handlers definition"""
+
+    def __init__(self, app):
+        self.app = app
+
+    def on_quit_clicked(self, *args):
+        """clean and close the app"""
+        Gtk.main_quit(*args)
+
+    def on_clear_clicked(self, *args):
+        """clear images list and image view"""
+        while self.app.imageList.get_row_at_index(0):
+            self.app.imageList.get_row_at_index(0).destroy()
+        while self.app.resultList.get_row_at_index(0):
+            self.app.resultList.get_row_at_index(0).destroy()
+        old_viewport = self.app.imageScrolled.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+        old_viewport = self.app.resultScrolled.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+        self.app.xmin.set_value(2658)
+        self.app.xmax.set_value(2730)
+        self.app.ymin.set_value(2600)
+        self.app.ymax.set_value(2680)
+        self.app.notebook.set_current_page(0)
+
+    def on_add_clicked(self, *args):
+        """Launch multi-select image file chooser dialog and append new files
+        to the image list and show last selected file"""
+        chooser = Gtk.FileChooserDialog("Choose an image", self.app.win,
+                                        Gtk.FileChooserAction.OPEN,
+                                        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                         Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        chooser.set_select_multiple(True)
+
+        image_filter = Gtk.FileFilter()
+        image_filter.set_name("Image files")
+        image_filter.add_pattern("*.tiff")
+        image_filter.add_pattern("*.TIIF")
+        image_filter.add_pattern("*.TIF")
+        image_filter.add_pattern("*.tif")
+        # any_filter = Gtk.FileFilter()
+        # any_filter.set_name("Any files")
+        # any_filter.add_pattern("*")
+
+        chooser.add_filter(image_filter)
+        # chooser.add_filter(any_filter)
+        response = chooser.run()
+        if response == Gtk.ResponseType.OK:
+            self.app.add_images(chooser.get_filenames())
+        chooser.destroy()
+
+    def on_about_clicked(self, *args):
+        """show about dialog"""
+        self.app.win.about.show_all()
+        # .run
+        # .destroy
+
+    def on_about_closed(self, *args):
+        """close about dialog"""
+        self.app.win.about.hide()
+
+    def on_search_changed(self, *args):
+        self.app.imageList.invalidate_filter()
+
+    def on_exec_clicked(self, *args):
+        """analyser les images importées
+        """
+        while self.app.resultList.get_row_at_index(0):
+            self.app.resultList.get_row_at_index(0).destroy()
+        old_viewport = self.app.resultScrolled.get_child()
+        if old_viewport:
+            old_viewport.destroy()
+
+        imgs = []
+        i = 0
+
+        while self.app.imageList.get_row_at_index(i):
+            imgs.append(self.app.imageList.get_row_at_index(i).data)
+            i += 1
+        img_analyzer = ImageAnalyzer(sorted(imgs),
+                                     bande=float(self.app.bande.get_active_text()),
+                                     facteur=float(self.app.facteur.get_active_text()))
+        img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
+                                  self.app.xmax.get_value_as_int(),
+                                  self.app.ymin.get_value_as_int(),
+                                  self.app.ymax.get_value_as_int())
+        img_analyzer.post_lecture()
+        img_analyzer.init_params()
+        img_analyzer.set_flags(shower=0)
+        fgs1 = img_analyzer.gen_hrf()
+        fgs2 = img_analyzer.gen_nrl()
+
+        i = 0
+        for fig in fgs1:
+            self.app.add_result('hrf' + str(i), fig)
+            i += 1
+        i = 0
+        for fig in fgs2:
+            self.app.add_result('nrl' + str(i), fig)
+            i += 1
+        self.app.notebook.set_current_page(2)
+
+    def on_item_delete(self, widget, ev, *args):
+        if ev.keyval == Gdk.KEY_Delete:
+            r = self.app.imageList.get_selected_row()
+            if r:
+                r.destroy()
+
+    def on_xmin_changed(self, *args):
+        print("changed")
+        self.app.xmax.set_range(self.app.xmin.get_value_as_int() + 1, self.app.shape[0])
+
+    def on_xmax_changed(self, *args):
+        print("changed")
+        self.app.xmin.set_range(0, self.app.xmax.get_value_as_int() - 1)
+
+    def on_ymin_changed(self, *args):
+        print("changed")
+        self.app.ymax.set_range(self.app.ymin.get_value_as_int() + 1, self.app.shape[1])
+
+    def on_ymax_changed(self, *args):
+        print("changed")
+        self.app.ymin.set_range(0, self.app.ymax.get_value_as_int() - 1)
