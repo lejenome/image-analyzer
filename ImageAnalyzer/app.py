@@ -123,9 +123,10 @@ class EventHandler():
             i += 1
         self.app.notebook.set_current_page(2)
 
-        def on_item_delete(self, widget, ev, args):
-            if ev.keyval == Gdk.KEY_Delete:
-                r = self.imageList.get_selected_row()
+    def on_item_delete(self, widget, ev, *args):
+        if ev.keyval == Gdk.KEY_Delete:
+            r = self.app.imageList.get_selected_row()
+            if r:
                 r.destroy()
 
 

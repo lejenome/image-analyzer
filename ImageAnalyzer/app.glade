@@ -611,6 +611,7 @@ THE SOFTWARE.
                               <object class="GtkListBox" id="listbox1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <signal name="key-release-event" handler="on_item_delete" swapped="no"/>
                               </object>
                             </child>
                           </object>
