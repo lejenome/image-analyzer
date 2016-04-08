@@ -12,11 +12,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
-from .core import ImageAnalyzer
+from .Conf import Configuration_InPuts
 from .eventHandler import EventHandler
-
-# imageList.set_sort_func(lambda r1, r2, data, notify_destroy: return -1, None, False)
-# imageList.set_filter_func(lambda r, r2, data, notify_destroy: return True, None, False)
 
 
 class App:
@@ -29,6 +26,7 @@ class App:
     """
 
     def __init__(self):
+        """recuperation of graphical object"""
         self.builder = Gtk.Builder()
 
         glade_file = os.path.join(os.path.dirname(__file__), 'app.glade')
@@ -152,9 +150,9 @@ class App:
         self.show_image(names[-1])
 
     def add_result(self, name, fig):
-        """ajouter un nouveau row avec le nom de l'image et enregister l'object fig on attr data
+        """add new row with name of image and save object fig on attr data
 
-        :param name: chemin du fichier image à ajouter
+        :param name: path of file to added
         :type name: str
         :param fig: l'objet figure genereté par imread
         :type fig: matplotlib.figure.Figure
@@ -166,6 +164,11 @@ class App:
         self.resultList.show_all()
 
     def show_result(self, fig):
+        """show data image on resultScrolled
+
+        :param fig: figure result from list
+        :type fig: matplotlib.figure.Figure
+        """
         old_viewport = self.resultScrolled.get_child()
         if old_viewport:
             old_viewport.destroy()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from gi.repository import Gtk, Gdk, GdkPixbuf
-from .core import ImageAnalyzer
-
+from .Conf import Configuration_InPuts
+from .Resultat import Result_Analysis
 
 class EventHandler():
     """Signal Event handlers definition"""
@@ -14,7 +14,9 @@ class EventHandler():
         Gtk.main_quit(*args)
 
     def on_clear_clicked(self, *args):
-        """clear images list and image view"""
+        """clear images list and image view
+        recuperation of default value from graphical object
+        """
         while self.app.imageList.get_row_at_index(0):
             self.app.imageList.get_row_at_index(0).destroy()
         while self.app.resultList.get_row_at_index(0):
@@ -97,29 +99,29 @@ class EventHandler():
         while self.app.imageList.get_row_at_index(i):
             imgs.append(self.app.imageList.get_row_at_index(i).data)
             i += 1
-        img_analyzer = ImageAnalyzer(sorted(imgs),
-                                     bande=float(self.app.bande.get_active_text()),
-                                     facteur=float(self.app.facteur.get_active_text()))
-        img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
-                                  self.app.xmax.get_value_as_int(),
-                                  self.app.ymin.get_value_as_int(),
-                                  self.app.ymax.get_value_as_int())
-        img_analyzer.post_lecture()
-        img_analyzer.init_params(beta=self.app.beta.get_value(),
-                                 sigmaH=self.app.sigmah.get_value(),
-                                 v_h_facture=self.app.vh.get_value_as_int(),
-                                 dt=self.app.dt.get_value_as_int(),
-                                 Thrf=self.app.thrf.get_value_as_int(),
-                                 TR=self.app.tr.get_value_as_int(),
-                                 K=self.app.k.get_value_as_int(),
-                                 M=self.app.m.get_value_as_int(),
-        )
-        img_analyzer.set_flags(pl=1 if self.app.pl.get_active() else 0)
-        fgs1 = img_analyzer.gen_hrf(nItMin=self.app.nitmin.get_value_as_int(),
-                                    nItMax=self.app.nitmax.get_value_as_int(),
-                                    scale=self.app.scale.get_value_as_int(),
-        )
-        fgs2 = img_analyzer.gen_nrl()
+        conf = Configuration_InPuts(sorted(imgs),
+                                    bande=float(self.app.bande.get_active_text()),
+                                    facteur=float(self.app.facteur.get_active_text()))
+        conf.lecture_data(self.app.xmin.get_value_as_int(),
+                          self.app.xmax.get_value_as_int(),
+                          self.app.ymin.get_value_as_int(),
+                          self.app.ymax.get_value_as_int())
+        conf.post_lecture()
+        Res = Result_Analysis.init_params(beta=self.app.beta.get_value(),
+                                          sigmaH=self.app.sigmah.get_value(),
+                                          v_h_facture=self.app.vh.get_value_as_int(),
+                                          dt=self.app.dt.get_value_as_int(),
+                                          Thrf=self.app.thrf.get_value_as_int(),
+                                          TR=self.app.tr.get_value_as_int(),
+                                          K=self.app.k.get_value_as_int(),
+                                          M=self.app.m.get_value_as_int(),
+                                          )
+        Res.set_flags(pl=1 if self.app.pl.get_active() else 0)
+        fgs1 = Res.gen_hrf(nItMin=self.app.nitmin.get_value_as_int(),
+                           nItMax=self.app.nitmax.get_value_as_int(),
+                           scale=self.app.scale.get_value_as_int(),
+                           )
+        fgs2 = Res.gen_nrl()
 
         i = 0
         for fig in fgs1:
