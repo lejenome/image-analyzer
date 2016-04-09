@@ -52,11 +52,11 @@ class Configuration_InPuts:
             labels = labels[xmin:xmax, ymin:ymax, self.bande].astype(float)
             if (self.facteur > 1):
                 labels = labels / self.facteur
-            signal.append(labels.flatten())
-        self.Y = asarray(signal)
+            self.signal.append(labels.flatten())
+        self.Y = asarray(self.signal)
         self.width = ymax - ymin
         self.height = xmax - xmin
-        return Y, width, height
+        return self.Y, self.width, self.height
 
     def post_lecture(self):
         STD = std(self.Y, 1)

@@ -24,6 +24,7 @@ from tifffile import imread
 from .Analyse_Data import Analyse_data
 from .Conf import Configuration_InPuts
 
+
 class Result_Analysis:
     output_dir = 'ParaguayOut/'
 

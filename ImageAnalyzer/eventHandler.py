@@ -3,6 +3,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf
 from .Conf import Configuration_InPuts
 from .Resultat import Result_Analysis
 
+
 class EventHandler():
     """Signal Event handlers definition"""
 
