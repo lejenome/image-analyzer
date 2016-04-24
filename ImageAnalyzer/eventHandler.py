@@ -42,6 +42,7 @@ class EventHandler():
         self.app.nitmin.set_value(30)
         self.app.nitmax.set_value(30)
         self.app.scale.set_value(1)
+        self.app.facteur.set_text(str(1000))
         self.app.pl.set_active(True)
         self.app.notebook.set_current_page(0)
 
@@ -160,6 +161,5 @@ class EventHandler():
         self.app.ymin.set_range(0, self.app.ymax.get_value_as_int() - 1)
 
     def on_facteur_ok(self, *args):
-        print("Clicked")
         self.app.facteur.set_text(str(self.app.spinbutton_facteur.get_value_as_int()))
         self.app.window_facteur.hide()
