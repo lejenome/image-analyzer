@@ -259,7 +259,7 @@ class ImageAnalyzer:
             q_Z0 = q_Z
         FlagH = 1
         TT, m_h = getCanoHRF(self.Thrf - self.dt, self.dt)
-        hrf0 = array(m_h).astype(float64)
+        self.hrf0 = hrf0 = array(m_h).astype(float64)
         Sigma_H0 = eye(hrf0.shape[0])
         if not FlagH:
             hrf0 = h_H

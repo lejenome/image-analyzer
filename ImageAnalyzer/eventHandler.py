@@ -128,6 +128,37 @@ class EventHandler():
         self.app.add_result('Niveau de réponse', fgs2[0])
         self.app.add_result('Label activation', fgs2[1])
         self.app.notebook.set_current_page(2)
+
+        try:
+            ttp = img_analyzer.dt * (img_analyzer.hrf0.argmax())
+        except Exception:
+            ttp = 0
+        MaxH = max(img_analyzer.m_H)
+        indMaxH = img_analyzer.m_H.argmax()
+        mid = (img_analyzer.m_H == MaxH / 2).nonzero()
+        IndUnder = img_analyzer.m_H.argmin()
+        Under = img_analyzer.m_H.min()
+        tmp1 = abs(img_analyzer.m_H[0:indMaxH] - MaxH / 2.0)
+        tmp2 = abs(img_analyzer.m_H[indMaxH:IndUnder] - MaxH / 2.0)
+        ind1 = tmp1.argmin()
+        try:
+            ind2 = indMaxH + tmp2.argmin()
+        except Exception:
+            ind2 = 0
+        FWHM = abs(ind2 - ind1)
+
+        self.app.ttp.set_text(str(ttp))
+        self.app.MaxH.set_text(str(MaxH))
+        self.app.indMaxH.set_text(str(indMaxH))
+        self.app.mid.set_text(str(mid))
+        self.app.IndUnder.set_text(str(IndUnder))
+        self.app.Under.set_text(str(Under))
+        self.app.tmp1.set_text(str(tmp1))
+        self.app.tmp2.set_text(str(tmp2))
+        self.app.ind1.set_text(str(ind1))
+        self.app.ind2.set_text(str(ind2))
+        self.app.FWHM.set_text(str(FWHM))
+
         # i = 0
         # for fig in fgs1:
         # self.app.add_result('fonction de reponse' , fig)
@@ -163,3 +194,6 @@ class EventHandler():
     def on_facteur_ok(self, *args):
         self.app.facteur.set_text(str(self.app.spinbutton_facteur.get_value_as_int()))
         self.app.window_facteur.hide()
+
+    def on_details_clicked(self, *args):
+        self.app.window_details.show_all()

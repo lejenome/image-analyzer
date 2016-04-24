@@ -78,6 +78,19 @@ class App:
         self.window_facteur = self.builder.get_object('window_facteur')
         self.spinbutton_facteur = self.builder.get_object('spinbutton_facteur')
 
+        self.window_details = self.builder.get_object('window_details')
+        self.ttp = self.builder.get_object('ttp')
+        self.MaxH = self.builder.get_object('MaxH')
+        self.indMaxH = self.builder.get_object('indMaxH')
+        self.mid = self.builder.get_object('mid')
+        self.IndUnder = self.builder.get_object('IndUnder')
+        self.Under = self.builder.get_object('Under')
+        self.tmp1 = self.builder.get_object('tmp1')
+        self.tmp2 = self.builder.get_object('tmp2')
+        self.ind1 = self.builder.get_object('ind1')
+        self.ind2 = self.builder.get_object('ind2')
+        self.FWHM = self.builder.get_object('FWHM')
+
     def run(self):
         """connect signals and run Gtk window"""
         self.builder.connect_signals(EventHandler(self))
