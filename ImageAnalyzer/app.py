@@ -74,6 +74,10 @@ class App:
         self.pl = self.builder.get_object('pl')
         self.shape = (0, 5000)
 
+        self.details = self.builder.get_object('button_details')
+        self.window_facteur = self.builder.get_object('window_facteur')
+        self.spinbutton_facteur = self.builder.get_object('spinbutton_facteur')
+
     def run(self):
         """connect signals and run Gtk window"""
         self.builder.connect_signals(EventHandler(self))
@@ -151,6 +155,7 @@ class App:
             self.add_image(name)
         self.imageList.show_all()
         self.show_image(names[-1])
+        self.window_facteur.show_all()
 
     def add_result(self, name, fig):
         """add new row with name of image and save object fig on attr data

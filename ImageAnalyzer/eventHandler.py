@@ -101,7 +101,7 @@ class EventHandler():
             i += 1
         img_analyzer = ImageAnalyzer(sorted(imgs),
                                      bande=float(self.app.bande.get_active_text()),
-                                     facteur=float(self.app.facteur.get_active_text()))
+                                     facteur=float(self.app.facteur.get_text()))
         img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
                                   self.app.xmax.get_value_as_int(),
                                   self.app.ymin.get_value_as_int(),
@@ -158,3 +158,8 @@ class EventHandler():
     def on_ymax_changed(self, *args):
         print("changed")
         self.app.ymin.set_range(0, self.app.ymax.get_value_as_int() - 1)
+
+    def on_facteur_ok(self, *args):
+        print("Clicked")
+        self.app.facteur.set_text(str(self.app.spinbutton_facteur.get_value_as_int()))
+        self.app.window_facteur.hide()
