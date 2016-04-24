@@ -30,7 +30,7 @@ class App:
 
     def __init__(self):
         """recuperation of graphical object"""
-        self.builder = Gtk.Builder()   
+        self.builder = Gtk.Builder()
 
         glade_file = os.path.join(os.path.dirname(__file__), 'app.glade')
         self.builder.add_from_file(glade_file)
@@ -168,9 +168,9 @@ class App:
 
     def show_result(self, fig):
         """show data image on resultScrolled
-        
+
         :param fig: figure result from list
-        :type fig: matplotlib.figure.Figure 
+        :type fig: matplotlib.figure.Figure
         """
         old_viewport = self.resultScrolled.get_child()
         if old_viewport:
@@ -183,7 +183,7 @@ class App:
         toolbar = NavigationToolbar(canvas, self.win)
         self.resultBox.add_with_viewport(toolbar)
         self.resultScrolled.show_all()
-        
+
 if __name__ == '__main__':
     app = App()
     app.run()

@@ -54,11 +54,11 @@ class ImageAnalyzer:
     def ConditionalNRLHist(self, nrls, labels):
         """Analyze method
 
-        :param nrls: 
-        :type nrls: 
+        :param nrls:
+        :type nrls:
         :param labels:
         :type labels:
-        :rtype: Resultlist of figures 
+        :rtype: Resultlist of figures
         """
         figures = []
         for m in range(0, self.M):
@@ -130,16 +130,16 @@ class ImageAnalyzer:
                     M=1,
                     ):
         """
-	initialization parameters for the analysis method ConditionalNRLHist
-		
-        :param beta: paramétre de regularité spaciale 
+        initialization parameters for the analysis method ConditionalNRLHist
+
+        :param beta: paramétre de regularité spaciale
         :type beta: float
         :param sigmaH: paramétre de lissage de la HRF
-        :type sigmaH: float 
-        :param v_h_facteur:hyper parametre 
+        :type sigmaH: float
+        :param v_h_facteur:hyper parametre
         :type v_h_facture: float
         :param dt: pas d'echelle Temporel de la HRF
-        :type dt: float   
+        :type dt: float
         :param Thrf: durée
         :type Thrf: int
         :param TR: temps de repetition
@@ -148,7 +148,7 @@ class ImageAnalyzer:
         :type K: int
         :param M: nombre de coordonnées experimontales
         :type M: int
-	"""
+        """
         self.beta = beta
         self.sigmaH = sigmaH
         self.v_h = v_h_facture * sigmaH
@@ -175,17 +175,17 @@ class ImageAnalyzer:
     #####################
     def set_flags(self, pl=1, save=0, savepl=1, shower=0, nf=1):
         """
-	initialization parameters for saving results		
-		
-	:param pl: low frequency component 
+        initialization parameters for saving results
+
+        :param pl: low frequency component
         :type pl: int
         :param save: variable to indicate the state of outputs
-        :type save: int 
+        :type save: int
         :param savepl: pl are saved in the directory OUTDIR
         :type savepl: int
         :param shower: show or not images results
-        :type shower: int   
-        :param nf: 
+        :type shower: int
+        :param nf:
         :type nf: int
         """
         # pl =0 sans PL ,pl =1 avec PL
@@ -207,16 +207,16 @@ class ImageAnalyzer:
                 scale=1,
                 ):
         """
-	allow to generate figures	
-		
-	:param nItMin: Minimum number of iteration
+        allow to generate figures
+
+        :param nItMin: Minimum number of iteration
         :type nItMin: int
         :param nItMax: Maximum number of iteration
-        :type nItMax: int 
+        :type nItMax: int
         :param estimateSigmaH: estimation of sigmaH
         :type estimateSigmaH: int
         :param estimateBeta: estimation of Beta
-        :type estimateBeta: int   
+        :type estimateBeta: int
         :param scale: scale factor
         :type scale: int
         """
@@ -314,11 +314,11 @@ class ImageAnalyzer:
         if self.shower == 1:
             show()
         return fgs
-        
+
     def gen_nrl(self):
         """
         generation of nrl figures
-        
+
         :param hh:
         :type hh:
         :param z1:
