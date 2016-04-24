@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from gi.repository import Gtk, Gdk, GdkPixbuf
-from .Conf import Configuration_InPuts
-from .Resultat import Result_Analysis
+from .core import ImageAnalyzer
 
 
 class EventHandler():
@@ -100,39 +99,44 @@ class EventHandler():
         while self.app.imageList.get_row_at_index(i):
             imgs.append(self.app.imageList.get_row_at_index(i).data)
             i += 1
-        conf = Configuration_InPuts(sorted(imgs),
-                                    bande=float(self.app.bande.get_active_text()),
-                                    facteur=float(self.app.facteur.get_active_text()))
-        conf.lecture_data(self.app.xmin.get_value_as_int(),
-                          self.app.xmax.get_value_as_int(),
-                          self.app.ymin.get_value_as_int(),
-                          self.app.ymax.get_value_as_int())
-        conf.post_lecture()
-        Res = Result_Analysis.init_params(beta=self.app.beta.get_value(),
-                                          sigmaH=self.app.sigmah.get_value(),
-                                          v_h_facture=self.app.vh.get_value_as_int(),
-                                          dt=self.app.dt.get_value_as_int(),
-                                          Thrf=self.app.thrf.get_value_as_int(),
-                                          TR=self.app.tr.get_value_as_int(),
-                                          K=self.app.k.get_value_as_int(),
-                                          M=self.app.m.get_value_as_int(),
-                                          )
-        Res.set_flags(pl=1 if self.app.pl.get_active() else 0)
-        fgs1 = Res.gen_hrf(nItMin=self.app.nitmin.get_value_as_int(),
-                           nItMax=self.app.nitmax.get_value_as_int(),
-                           scale=self.app.scale.get_value_as_int(),
-                           )
-        fgs2 = Res.gen_nrl()
-
-        i = 0
-        for fig in fgs1:
-            self.app.add_result('hrf' + str(i), fig)
-            i += 1
-        i = 0
-        for fig in fgs2:
-            self.app.add_result('nrl' + str(i), fig)
-            i += 1
+        img_analyzer = ImageAnalyzer(sorted(imgs),
+                                     bande=float(self.app.bande.get_active_text()),
+                                     facteur=float(self.app.facteur.get_active_text()))
+        img_analyzer.lecture_data(self.app.xmin.get_value_as_int(),
+                                  self.app.xmax.get_value_as_int(),
+                                  self.app.ymin.get_value_as_int(),
+                                  self.app.ymax.get_value_as_int())
+        img_analyzer.post_lecture()
+        img_analyzer.init_params(beta=self.app.beta.get_value(),
+                                 sigmaH=self.app.sigmah.get_value(),
+                                 v_h_facture=self.app.vh.get_value_as_int(),
+                                 dt=self.app.dt.get_value_as_int(),
+                                 Thrf=self.app.thrf.get_value_as_int(),
+                                 TR=self.app.tr.get_value_as_int(),
+                                 K=self.app.k.get_value_as_int(),
+                                 M=self.app.m.get_value_as_int(),
+        )
+        img_analyzer.set_flags(pl=1 if self.app.pl.get_active() else 0)
+        fgs1 = img_analyzer.gen_hrf(nItMin=self.app.nitmin.get_value_as_int(),
+                                    nItMax=self.app.nitmax.get_value_as_int(),
+                                    scale=self.app.scale.get_value_as_int(),
+        )
+        self.app.add_result('fonction de réponse' , fgs1[0])
+        self.app.add_result('Mélange à posteriori' , fgs1[1])
+        fgs2 = img_analyzer.gen_nrl()
+        self.app.add_result('Niveau de réponse' , fgs2[0])
+        self.app.add_result('Label activation' , fgs2[1])
         self.app.notebook.set_current_page(2)
+        #i = 0
+        #for fig in fgs1:
+            #self.app.add_result('fonction de reponse' , fig)
+            #self.app.add_result('Mélange a posteriori ' , fig)
+            #i += 1
+        #i = 0
+        #for fig in fgs2:
+            #self.app.add_result('nrl' + str(i), fig)
+            #i += 1
+        
 
     def on_item_delete(self, widget, ev, *args):
         if ev.keyval == Gdk.KEY_Delete:

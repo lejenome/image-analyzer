@@ -52,6 +52,14 @@ class ImageAnalyzer:
         return image
 
     def ConditionalNRLHist(self, nrls, labels):
+        """Analyze method
+
+        :param nrls: 
+        :type nrls: 
+        :param labels:
+        :type labels:
+        :rtype: Resultlist of figures 
+        """
         figures = []
         for m in range(0, self.M):
             q = labels[m, 1, :]
@@ -121,6 +129,26 @@ class ImageAnalyzer:
                     K=2,
                     M=1,
                     ):
+        """
+	initialization parameters for the analysis method ConditionalNRLHist
+		
+        :param beta: paramétre de regularité spaciale 
+        :type beta: float
+        :param sigmaH: paramétre de lissage de la HRF
+        :type sigmaH: float 
+        :param v_h_facteur:hyper parametre 
+        :type v_h_facture: float
+        :param dt: pas d'echelle Temporel de la HRF
+        :type dt: float   
+        :param Thrf: durée
+        :type Thrf: int
+        :param TR: temps de repetition
+        :type TR: int
+        :param K: nombre de class
+        :type K: int
+        :param M: nombre de coordonnées experimontales
+        :type M: int
+	"""
         self.beta = beta
         self.sigmaH = sigmaH
         self.v_h = v_h_facture * sigmaH
@@ -146,6 +174,20 @@ class ImageAnalyzer:
     # flags
     #####################
     def set_flags(self, pl=1, save=0, savepl=1, shower=0, nf=1):
+        """
+	initialization parameters for saving results		
+		
+	:param pl: low frequency component 
+        :type pl: int
+        :param save: variable to indicate the state of outputs
+        :type save: int 
+        :param savepl: pl are saved in the directory OUTDIR
+        :type savepl: int
+        :param shower: show or not images results
+        :type shower: int   
+        :param nf: 
+        :type nf: int
+        """
         # pl =0 sans PL ,pl =1 avec PL
         self.pl = pl
         # save = 1  les outputs sont sauvgardés
@@ -164,6 +206,20 @@ class ImageAnalyzer:
                 Onsets={'nuages': array([0])},
                 scale=1,
                 ):
+        """
+	allow to generate figures	
+		
+	:param nItMin: Minimum number of iteration
+        :type nItMin: int
+        :param nItMax: Maximum number of iteration
+        :type nItMax: int 
+        :param estimateSigmaH: estimation of sigmaH
+        :type estimateSigmaH: int
+        :param estimateBeta: estimation of Beta
+        :type estimateBeta: int   
+        :param scale: scale factor
+        :type scale: int
+        """
         # estimationSigmah = 0 sans estimation de sigmh , estimationSigmah=1 estimation de sigmah
         # estimateBeta = 0 sans estimation de beta , estimateBeta=1 estimation de beta
         # construction Onsets
@@ -245,8 +301,8 @@ class ImageAnalyzer:
         #
         # figure Hrf #######
         fgs.insert(0, figure((self.nf + 1) * 123))
-        title("hrf", fontsize='xx-large')
-        figtext(0.4, 0.04,
+        title("Fonction de reponse", fontsize='xx-large')
+        figtext(0.2, 0.04,
                 'bande = ' + str(self.bande) +
                 ' beta =' + str(self.beta) +
                 ' sigma = ' + str(self.sigmaH) +
@@ -255,14 +311,25 @@ class ImageAnalyzer:
                 ' thrf = ' + str(self.Thrf),
                 fontsize='x-large')
         plot(self.m_H)
-        if self.save == 1:
-            savefig(self.output_dir + 'hrf bande =' + str(self.bande) + 'beta=' + str(self.beta) + 'sigma= ' +
-                    str(self.sigmaH) + 'pl=' + str(self.pl) + 'dt=' + str(self.dt) + 'thrf' + str(self.Thrf) + '.png')
         if self.shower == 1:
             show()
         return fgs
-
+        
     def gen_nrl(self):
+        """
+        generation of nrl figures
+        
+        :param hh:
+        :type hh:
+        :param z1:
+        :type z1:
+        :param z2:
+        :type z2:
+        :param fg:
+        :type fg:
+        :param fig:
+        :type fig:
+        """
         figures = []
         # figure(55)
         # matshow(reshape(sigma_epsilone,(height,width)))
@@ -276,8 +343,8 @@ class ImageAnalyzer:
             # figure Nrl ########,cmap=get_cmap('gray')
             data = ax.matshow(z2, cmap=get_cmap('gray'))
             fig.colorbar(data)
-            title("nrl", fontsize='xx-large')
-            figtext(0.4, 0.04,
+            title("Niveau de reponse", fontsize='xx-large')
+            figtext(0.2, 0.04,
                     'bande = ' + str(self.bande) +
                     ' beta =' + str(self.beta) +
                     ' sigma = ' + str(self.sigmaH) +
@@ -296,8 +363,8 @@ class ImageAnalyzer:
             fig, ax = subplots()
             data = ax.matshow(q2, cmap=get_cmap('gray'))
             fig.colorbar(data)
-            title("nrl", fontsize='xx-large')
-            figtext(0.4, 0.04,
+            title("Label d'activation", fontsize='xx-large')
+            figtext(0.2, 0.04,
                     'bande = ' + str(self.bande) +
                     ' beta =' + str(self.beta) +
                     ' sigma = ' + str(self.sigmaH) +
